@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT Distraction-Free</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="glass-container">
+        <header>
+            <div class="logo-area">
+                <img src="images/icon128.png" alt="Logo" class="logo-icon">
+                <h1>YT Distraction-Free</h1>
+            </div>
+            <button id="themeToggle" class="theme-toggle-btn" title="Toggle Theme"></button>
+        </header>
+
+        <main class="settings-grid">
+            <section class="settings-group">
+                <h3>Core Blocking</h3>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Shorts</span>
+                        <span class="desc">Hide shorts completely</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="blockShorts">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Homepage</span>
+                        <span class="desc">Hide Recommendations</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="blockHomepage">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Sidebar</span>
+                        <span class="desc">Hide related videos</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="blockSidebar">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">End Screens</span>
+                        <span class="desc">Remove suggesting cards</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="blockEndscreen">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Live Chat</span>
+                        <span class="desc">Always minimize chat</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="minimizeChat">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Watermark</span>
+                        <span class="desc">Hide channel branding</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="blockWatermark">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Info Cards</span>
+                        <span class="desc">Block in-video prompts</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="blockInfoCards">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Channel Autoplay</span>
+                        <span class="desc">Pause video on channel home</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="blockChannelAutoplay">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Auto Videos Tab</span>
+                        <span class="desc">Redirect Home to Videos</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="redirectChannelHome">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Blur Thumbnails</span>
+                        <span class="desc">Show images on hover only</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="blurThumbnails">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Social Detox</span>
+                        <span class="desc">Hide subs, likes and comments</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="hideMetrics">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="label">Pause on Load</span>
+                        <span class="desc">Stop autoplay in new tab</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="pauseOnLoad">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="settings-group">
+                <h3>Video Engine</h3>
+                <div class="setting-item vertical">
+                    <label for="qualitySelect">Enforce Resolution</label>
+                    <select id="qualitySelect" class="premium-select">
+                        <option value="auto">Auto (Native)</option>
+                        <option value="360">360p</option>
+                        <option value="480">480p</option>
+                        <option value="720">720p (HD)</option>
+                        <option value="1080">1080p (FHD)</option>
+                        <option value="1440">1440p (2K)</option>
+                        <option value="2160">2160p (4K)</option>
+                    </select>
+                </div>
+                <div class="setting-item vertical">
+                    <label for="speedControl">Playback Speed</label>
+                    <select id="speedControl" class="premium-select">
+                        <option value="0.25">0.25x</option>
+                        <option value="0.5">0.5x</option>
+                        <option value="0.75">0.75x</option>
+                        <option value="1" selected>1x (Normal)</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="1.75">1.75x</option>
+                        <option value="2">2x</option>
+                        <option value="2.5">2.5x</option>
+                        <option value="3">3x</option>
+                    </select>
+                </div>
+            </section>
+        </main>
+
+        <footer class="popup-footer">
+            <div class="footer-actions">
+                <button id="feedbackBtn" class="footer-btn">
+                    <span class="icon">💬</span> Feedback
+                </button>
+                <div class="support-container">
+                    <button id="supportBtn" class="footer-btn accent">
+                        <span class="icon">❤️</span> Support
+                    </button>
+                    <div id="supportMenu" class="bubble-menu">
+                        <a href="https://www.buymeacoffee.com/" target="_blank" class="menu-item">
+                            <span class="icon">☕</span> Donate
+                        </a>
+                        <a href="https://chrome.google.com/webstore/detail/your-extension-id" target="_blank"
+                            class="menu-item">
+                            <span class="icon">⭐</span> Rate Extension
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="statusMessage" class="status-pill"></div>
+        </footer>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>

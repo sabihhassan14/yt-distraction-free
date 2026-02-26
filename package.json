@@ -1,0 +1,29 @@
+{
+  "name": "youtube-distraction-free-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension for distraction-free YouTube with automatic quality control",
+  "main": "generate_icons_node.js",
+  "scripts": {
+    "generate-icons": "node generate_icons_node.js",
+    "build": "npm run generate-icons"
+  },
+  "keywords": [
+    "chrome-extension",
+    "youtube",
+    "distraction-free",
+    "quality-control",
+    "manifest-v3"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "canvas": "^2.11.0"
+  },
+  "optionalDependencies": {
+    "pillow": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
