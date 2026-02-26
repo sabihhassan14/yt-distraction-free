@@ -179,11 +179,9 @@ function buildBlockingCSS() {
             display:none !important;height:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;
         }
         #secondary,#secondary-inner,#related{
-            opacity:${s.blockSidebar ? '0' : '1'} !important;
-            pointer-events:${s.blockSidebar ? 'none' : 'auto'} !important;
-            visibility:${s.blockSidebar ? 'hidden' : 'visible'} !important
+            display:${s.blockSidebar ? 'none' : 'block'} !important;
         }
-        ytd-watch-two-column-results-renderer{display:grid !important;grid-template-columns:1fr 390px !important}
+        ytd-watch-two-column-results-renderer{display:grid !important;grid-template-columns:${s.blockSidebar ? '1fr' : '1fr 390px'} !important}
         .ytp-watermark,.iv-branding{display:${s.blockWatermark ? 'none' : 'block'} !important}
         /* End screens and pause overlay — use all four properties to beat
            any specificity or inline-style override YouTube may apply */
@@ -443,9 +441,12 @@ function setupMutationObservers() {
         const contentArea = document.querySelector('ytd-app');
         if (contentArea) {
             clearInterval(waitForApp);
+            clearTimeout(waitForAppTimeout);
             mainObserver.observe(contentArea, { childList: true, subtree: true });
         }
     }, 500);
+    // Bail out after 15 s to avoid polling forever on broken/changed pages
+    const waitForAppTimeout = setTimeout(() => clearInterval(waitForApp), 15000);
 }
 
 /**

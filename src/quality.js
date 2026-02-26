@@ -219,19 +219,10 @@
     }
 
     // Event-driven suppression — replaces the aggressive interval with clever triggers
-    let _suppressionSetUp = false;
     const _listenerAttachedTo = new WeakSet(); // tracks which player elements already have the listener
     function setupSuppressionEvent() {
         const player = document.getElementById('movie_player');
         if (!player) return;
-
-        // Guard: only create the persistent backstop interval once per page lifetime
-        if (!_suppressionSetUp) {
-            _suppressionSetUp = true;
-            setInterval(() => {
-                if (shouldBlockEndscreen()) suppressEndscreen();
-            }, 1000);
-        }
 
         // Guard: only attach onStateChange once per player element instance.
         // YouTube's SPA keeps #movie_player alive across navigations, so without
@@ -297,9 +288,6 @@
             if (e.target && e.target.tagName === 'VIDEO') {
                 e.target.pause();
                 hasPausedOnLoad = true;
-                if (localStorage.getItem('ytdf_debug') === '1') {
-                    console.log('[YT-DF] Autoplay paused (new tab)');
-                }
             }
         }, { capture: true });
     }

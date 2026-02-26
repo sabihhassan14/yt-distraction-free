@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy – Distraction-Free for YouTube</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            max-width: 760px;
+            margin: 48px auto;
+            padding: 0 24px;
+            line-height: 1.7;
+            color: #1a1a2e;
+            background: #f9f9fb;
+        }
+        h1 { font-size: 1.8rem; margin-bottom: 4px; color: #0f3460; }
+        h2 { font-size: 1.1rem; margin-top: 32px; color: #0f3460; border-bottom: 1px solid #dde; padding-bottom: 4px; }
+        .meta { color: #666; font-size: 0.9rem; margin-bottom: 32px; }
+        a { color: #0077cc; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 6px; }
+    </style>
+</head>
+<body>
+
+<h1>Privacy Policy</h1>
+<p class="meta">
+    Extension: <strong>Distraction-Free for YouTube</strong><br>
+    Last updated: February 26, 2026
+</p>
+
+<h2>Overview</h2>
+<p>
+    Distraction-Free for YouTube is a Chrome browser extension that helps users reduce
+    distractions on YouTube by hiding UI elements and controlling video playback settings.
+    This policy explains exactly what data the extension accesses, stores, and transmits.
+</p>
+
+<h2>Data We Do Not Collect</h2>
+<ul>
+    <li>We do <strong>not</strong> collect, record, or transmit any personal information.</li>
+    <li>We do <strong>not</strong> track browsing history, watch history, or URLs visited.</li>
+    <li>We do <strong>not</strong> collect analytics or usage statistics.</li>
+    <li>We do <strong>not</strong> communicate with any remote server or third-party service.</li>
+    <li>We do <strong>not</strong> use cookies or any cross-site tracking mechanism.</li>
+</ul>
+
+<h2>Local Storage Usage</h2>
+<p>
+    The extension stores your feature preferences (e.g., whether Shorts are hidden,
+    your preferred video quality, playback speed) using two browser-native mechanisms:
+</p>
+<ul>
+    <li>
+        <strong>chrome.storage.sync</strong> — Stores your on/off toggle states and quality/speed
+        preferences so they persist across browser sessions and sync across your signed-in
+        Chrome devices. Only extension preference values (booleans and short string identifiers)
+        are stored. No personal data or browsing history is ever written here.
+    </li>
+    <li>
+        <strong>youtube.com localStorage</strong> — A small number of preference keys
+        (prefixed <code>ytdf_</code>) are written to YouTube's own page storage. This is
+        required so the content script (which hides page elements) and the player script
+        (which controls video quality) can share settings synchronously without an
+        asynchronous message round-trip. These values are purely the user's own preferences
+        and are never read or transmitted by any party other than this extension.
+    </li>
+</ul>
+
+<h2>Permissions Justification</h2>
+<ul>
+    <li>
+        <strong>storage</strong> — Required to save your toggle and quality preferences
+        using <code>chrome.storage.sync</code> as described above.
+    </li>
+    <li>
+        <strong>host_permissions: https://www.youtube.com/*</strong> — Required to inject
+        the content scripts that hide distracting UI elements and control video playback
+        on YouTube pages. The extension only operates on YouTube and has no access to
+        any other website.
+    </li>
+</ul>
+
+<h2>No Data Sharing</h2>
+<p>
+    Because no user data is collected, there is nothing to share, sell, or disclose
+    to any third party. All extension functionality is entirely local to your browser.
+</p>
+
+<h2>Changes to This Policy</h2>
+<p>
+    If this policy is ever updated, the "Last updated" date above will change and the
+    new version will be published at the same URL.
+</p>
+
+<h2>Contact</h2>
+<p>
+    Questions or concerns about this privacy policy can be directed to:
+    <a href="mailto:sabih942@gmail.com">sabih942@gmail.com</a>
+    or via a
+    <a href="https://github.com/sabihhassan14/yt-distraction-free/issues/new" target="_blank">GitHub issue</a>.
+</p>
+
+</body>
+</html>

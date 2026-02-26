@@ -10,7 +10,7 @@
     --success: #10b981;
     --error: #ef4444;
     --card-radius: 16px;
-    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-main: system-ui, -apple-system, 'Segoe UI', sans-serif;
     --toggle-off: rgba(148, 163, 184, 0.25);
     --toggle-border: rgba(148, 163, 184, 0.5);
     /* Modern Grey */
