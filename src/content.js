@@ -171,7 +171,41 @@ function handleMessage(request, sender, sendResponse) {
 function buildBlockingCSS() {
     const s = currentSettings;
     return `
-        ytd-rich-shelf-renderer[is-shorts],ytd-rich-shelf-renderer[is-shorts="true"],ytd-reel-shelf-renderer{display:${s.blockShorts ? 'none' : 'block'} !important}
+        ${s.blockShorts ? `
+        ytd-reel-shelf-renderer,
+        ytd-reel-shelf-renderer[is-shorts],
+        ytd-reel-shelf-renderer:has(a[href*="/shorts/"]),
+        ytd-shorts-shelf-renderer,
+        ytd-shorts-shelf-renderer:has(a[href*="/shorts/"]),
+        ytd-reel-video-renderer,
+        ytd-reel-item-renderer,
+        ytd-shorts,
+        ytd-rich-shelf-renderer[is-shorts],
+        ytd-rich-shelf-renderer[is-shorts="true"],
+        ytd-rich-shelf-renderer:has(a[href*="/shorts/"]),
+        grid-shelf-view-model:has(a[href*="/shorts/"]),
+        ytm-shorts-lockup-view-model,
+        ytm-shorts-lockup-view-model-v2,
+        ytd-lockup-view-model[is-shorts],
+        yt-lockup-view-model[is-shorts],
+        ytd-rich-item-renderer:has(a[href*="/shorts/"]),
+        ytd-grid-video-renderer:has(a[href*="/shorts/"]),
+        ytd-video-renderer:has(a[href*="/shorts/"]),
+        ytd-compact-video-renderer:has(a[href*="/shorts/"])
+        { display:none !important; height:0 !important; min-height:0 !important; margin:0 !important; padding:0 !important; }
+        ` : `
+        ytd-reel-shelf-renderer,
+        ytd-reel-shelf-renderer[is-shorts],
+        ytd-shorts-shelf-renderer,
+        ytd-reel-video-renderer,
+        ytd-reel-item-renderer,
+        ytd-shorts,
+        ytd-rich-shelf-renderer[is-shorts],
+        ytd-rich-shelf-renderer[is-shorts="true"],
+        ytd-lockup-view-model[is-shorts],
+        yt-lockup-view-model[is-shorts]
+        { display:block !important; }
+        `}
         ytd-guide-entry-renderer:has(a[href^="/shorts"]),ytd-guide-entry-renderer:has(a[title="Shorts"]),ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),ytd-mini-guide-entry-renderer:has(a[title="Shorts"]){display:${s.blockShorts ? 'none' : 'flex'} !important}
         ytd-grid-video-renderer:has(a[href*="/shorts/"]),yt-tab-shape[tab-title="Shorts"],tp-yt-paper-tab:has([aria-label="Shorts"]){display:${s.blockShorts ? 'none' : 'flex'} !important}
         ytd-rich-grid-renderer{display:${s.blockHomepage ? 'none' : 'block'} !important}
@@ -318,6 +352,7 @@ function applyBlocking() {
     const style = document.getElementById('yt-df-blocking');
     if (style) style.textContent = buildBlockingCSS();
     if (currentSettings.hideMetrics) hideSubscriberCountsJS();
+    if (currentSettings.blockShorts) hideShortsDOM();
 }
 
 /**
@@ -434,6 +469,7 @@ function setupMutationObservers() {
     setInterval(() => {
         if (currentSettings.blockChannelAutoplay) preventChannelAutoplay();
         if (currentSettings.hideMetrics) hideSubscriberCountsJS();
+        if (currentSettings.blockShorts) hideShortsDOM();
     }, 1500);
 
     // Wait for ytd-app then start the main observer
@@ -462,6 +498,47 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
+}
+
+/**
+ * Lightweight Shorts detection helpers
+ */
+function nodeHasShortsMarker(el) {
+    if (!el) return false;
+    if (el.hasAttribute && (el.hasAttribute('is-shorts') || el.hasAttribute('is_shorts'))) return true;
+    if (el.dataset && (el.dataset.isShorts === 'true' || el.dataset.isShort === 'true')) return true;
+    return false;
+}
+
+function nodeHasShortsLink(el) {
+    if (!el) return false;
+    const anchor = el.querySelector && el.querySelector('a[href*="/shorts/"]');
+    return !!anchor;
+}
+
+function isShortCard(el) {
+    return nodeHasShortsMarker(el) || nodeHasShortsLink(el);
+}
+
+/**
+ * Hide Shorts shelves and cards that bypass CSS-only rules.
+ * Scoped to known container/card tags to avoid nuking unrelated content.
+ */
+function hideShortsDOM() {
+    // Hide obvious shelf and reel elements
+    document.querySelectorAll(
+        'ytd-shorts-shelf-renderer, ytd-reel-shelf-renderer, ytd-reel-video-renderer, ytd-reel-item-renderer, ytd-rich-shelf-renderer[is-shorts], grid-shelf-view-model, ytm-shorts-lockup-view-model, ytm-shorts-lockup-view-model-v2'
+    ).forEach(el => el.style.setProperty('display', 'none', 'important'));
+
+    // Hide individual cards/lockups that link to Shorts
+    document.querySelectorAll(
+        'ytd-rich-item-renderer, ytd-grid-video-renderer, ytd-video-renderer, ytd-compact-video-renderer, ytd-lockup-view-model, yt-lockup-view-model, ytm-shorts-lockup-view-model, ytm-shorts-lockup-view-model-v2'
+    ).forEach(el => {
+        if (el.style.display === 'none') return;
+        if (isShortCard(el)) {
+            el.style.setProperty('display', 'none', 'important');
+        }
+    });
 }
 
 /**
