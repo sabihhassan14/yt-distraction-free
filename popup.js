@@ -75,24 +75,37 @@ function setupEventListeners() {
     const supportBtn = document.getElementById('supportBtn');
     const supportMenu = document.getElementById('supportMenu');
     const feedbackBtn = document.getElementById('feedbackBtn');
+    const feedbackMenu = document.getElementById('feedbackMenu');
 
     if (supportBtn && supportMenu) {
         supportBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            feedbackMenu && feedbackMenu.classList.remove('active');
             supportMenu.classList.toggle('active');
         });
+    }
 
-        // Close menu when clicking elsewhere
-        document.addEventListener('click', () => {
-            supportMenu.classList.remove('active');
+    if (feedbackBtn && feedbackMenu) {
+        feedbackBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            supportMenu && supportMenu.classList.remove('active');
+            feedbackMenu.classList.toggle('active');
         });
     }
 
-    if (feedbackBtn) {
-        feedbackBtn.addEventListener('click', () => {
-            window.open('https://github.com/your-username/your-repo/issues', '_blank');
+    const emailFeedbackLink = document.getElementById('emailFeedbackLink');
+    if (emailFeedbackLink) {
+        emailFeedbackLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = emailFeedbackLink.href;
         });
     }
+
+    // Close both menus when clicking elsewhere
+    document.addEventListener('click', () => {
+        supportMenu && supportMenu.classList.remove('active');
+        feedbackMenu && feedbackMenu.classList.remove('active');
+    });
 }
 
 /**

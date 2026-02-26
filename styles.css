@@ -314,7 +314,8 @@ input:checked+.slider:before {
     box-shadow: 0 4px 12px var(--accent-glow);
 }
 
-.support-container {
+.support-container,
+.feedback-container {
     position: relative;
     display: flex;
 }
@@ -362,6 +363,12 @@ input:checked+.slider:before {
     font-size: 0.85rem;
     border-radius: 10px;
     transition: background 0.2s ease;
+}
+
+.menu-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .menu-item:hover {
