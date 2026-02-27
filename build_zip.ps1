@@ -5,7 +5,7 @@
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 $outDir = Join-Path $root "dist"
-$zipPath = Join-Path $outDir "distraction-free-for-youtube.zip"
+$zipPath = Join-Path $outDir "lucent-for-youtube-1.0.1.zip"
 
 # Files/folders to include in the extension package
 $include = @(

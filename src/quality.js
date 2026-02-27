@@ -110,7 +110,7 @@
     // ─── Endscreen / pause-overlay blocking ───────────────────────────────────
 
     function shouldBlockEndscreen() {
-        const val = localStorage.getItem('ytdf_endscreen');
+        const val = localStorage.getItem('ytdf_player_overlays');
         return val !== '0';
     }
 

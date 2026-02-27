@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Distraction-Free for YouTube",
-  "version": "1.0.0",
-  "description": "Remove distractions and lock video quality on YouTube - Shorts, recommendations, and sidebar blocker with auto HD quality control.",
+  "name": "Lucent – Intentional Youtube & Auto HD",
+  "version": "1.0.1",
+  "description": "Block Shorts, hide recommendations & sidebar, auto-lock HD quality, control playback speed and blur thumbnails. Free.",
   "permissions": [
     "storage"
   ],

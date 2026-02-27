@@ -9,10 +9,8 @@ const DEFAULT_SETTINGS = {
     blockShorts: true,
     blockHomepage: true,
     blockSidebar: true,
-    blockEndscreen: true,
-    blockWatermark: true,
+    blockPlayerOverlays: true,
     minimizeChat: true,
-    blockInfoCards: true,
     blockChannelAutoplay: true,
     redirectChannelHome: true,
     pauseOnLoad: false,
@@ -31,10 +29,8 @@ let currentSettings = { ...DEFAULT_SETTINGS };
  */
 function syncSettingsToLocalStorage(s) {
     localStorage.setItem('ytdf_quality',          s.qualitySelect || 'auto');
-    localStorage.setItem('ytdf_endscreen',        s.blockEndscreen    ? '1' : '0');
-    localStorage.setItem('ytdf_watermark',        s.blockWatermark    ? '1' : '0');
+    localStorage.setItem('ytdf_player_overlays',  s.blockPlayerOverlays ? '1' : '0');
     localStorage.setItem('ytdf_chat',             s.minimizeChat      ? '1' : '0');
-    localStorage.setItem('ytdf_infocards',        s.blockInfoCards    ? '1' : '0');
     localStorage.setItem('ytdf_pause_on_load',    s.pauseOnLoad       ? '1' : '0');
     localStorage.setItem('ytdf_blur_thumbnails',  s.blurThumbnails    ? '1' : '0');
     localStorage.setItem('ytdf_hide_metrics',     s.hideMetrics       ? '1' : '0');
@@ -50,10 +46,8 @@ function syncSettingsToLocalStorage(s) {
 (function preSeedLocalStorage() {
     const seed = {
         ytdf_pause_on_load:   DEFAULT_SETTINGS.pauseOnLoad      ? '1' : '0',
-        ytdf_endscreen:       DEFAULT_SETTINGS.blockEndscreen   ? '1' : '0',
-        ytdf_watermark:       DEFAULT_SETTINGS.blockWatermark   ? '1' : '0',
+        ytdf_player_overlays: DEFAULT_SETTINGS.blockPlayerOverlays ? '1' : '0',
         ytdf_chat:            DEFAULT_SETTINGS.minimizeChat     ? '1' : '0',
-        ytdf_infocards:       DEFAULT_SETTINGS.blockInfoCards   ? '1' : '0',
         ytdf_blur_thumbnails: DEFAULT_SETTINGS.blurThumbnails   ? '1' : '0',
         ytdf_hide_metrics:    DEFAULT_SETTINGS.hideMetrics      ? '1' : '0',
         ytdf_speed:           DEFAULT_SETTINGS.speedControl     || '1',
@@ -68,10 +62,8 @@ function syncSettingsToLocalStorage(s) {
     const ls = (k) => localStorage.getItem(k);
     currentSettings.hideMetrics         = ls('ytdf_hide_metrics')    === '1';
     currentSettings.pauseOnLoad         = ls('ytdf_pause_on_load')   === '1';
-    currentSettings.blockEndscreen      = ls('ytdf_endscreen')       === '1';
-    currentSettings.blockWatermark      = ls('ytdf_watermark')       === '1';
+    currentSettings.blockPlayerOverlays = ls('ytdf_player_overlays') === '1';
     currentSettings.minimizeChat        = ls('ytdf_chat')            === '1';
-    currentSettings.blockInfoCards      = ls('ytdf_infocards')       === '1';
     currentSettings.blurThumbnails      = ls('ytdf_blur_thumbnails') === '1';
     currentSettings.speedControl        = ls('ytdf_speed') || '1';
     currentSettings.redirectChannelHome = ls('ytdf_redirect_channel') === '1';
@@ -158,7 +150,7 @@ function handleMessage(request, sender, sendResponse) {
         // blockEndscreen is toggled ON mid-session (the normal initEndscreen call
         // only runs on navigation, so popup toggles would otherwise be CSS-only).
         window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
-            detail: { blockEndscreen: !!currentSettings.blockEndscreen }
+            detail: { blockEndscreen: !!currentSettings.blockPlayerOverlays }
         }));
 
         sendResponse({ success: true });
@@ -208,7 +200,7 @@ function buildBlockingCSS() {
         `}
         ytd-guide-entry-renderer:has(a[href^="/shorts"]),ytd-guide-entry-renderer:has(a[title="Shorts"]),ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),ytd-mini-guide-entry-renderer:has(a[title="Shorts"]){display:${s.blockShorts ? 'none' : 'flex'} !important}
         ytd-grid-video-renderer:has(a[href*="/shorts/"]),yt-tab-shape[tab-title="Shorts"],tp-yt-paper-tab:has([aria-label="Shorts"]){display:${s.blockShorts ? 'none' : 'flex'} !important}
-        ytd-rich-grid-renderer{display:${s.blockHomepage ? 'none' : 'block'} !important}
+        ytd-browse[page-subtype="home"] ytd-rich-grid-renderer{display:${s.blockHomepage ? 'none' : 'block'} !important}
         ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts="true"]){
             display:none !important;height:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;
         }
@@ -216,10 +208,10 @@ function buildBlockingCSS() {
             display:${s.blockSidebar ? 'none' : 'block'} !important;
         }
         ytd-watch-two-column-results-renderer{display:grid !important;grid-template-columns:${s.blockSidebar ? '1fr' : '1fr 390px'} !important}
-        .ytp-watermark,.iv-branding{display:${s.blockWatermark ? 'none' : 'block'} !important}
+        .ytp-watermark,.iv-branding{display:${s.blockPlayerOverlays ? 'none' : 'block'} !important}
         /* End screens and pause overlay — use all four properties to beat
            any specificity or inline-style override YouTube may apply */
-        ${s.blockEndscreen ? `
+        ${s.blockPlayerOverlays ? `
         #movie_player .html5-endscreen,
         #movie_player .ytp-endscreen,
         #movie_player .ytp-endscreen-content,
@@ -268,7 +260,7 @@ function buildBlockingCSS() {
         }
         ` : ``}
         /* Info Cards */
-        ${s.blockInfoCards ? `
+        ${s.blockPlayerOverlays ? `
         .ytp-cards-button,
         .ytp-cards-teaser,
         .ytp-ce-element-show,

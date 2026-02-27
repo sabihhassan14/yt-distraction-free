@@ -135,49 +135,105 @@
         }
     </style>
 </head>
-<body>
-    <div class="tile">
-        <div class="ring ring-1"></div>
-        <div class="ring ring-2"></div>
-        <div class="badge">Manifest V3 · Free</div>
+<body style="margin:0;padding:0;">
 
-        <div class="icon-row">
-            <div class="icon-circle">
-                <!-- Play + slash icon matching extension icon design -->
-                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="16" cy="16" r="10" stroke="#00d4ff" stroke-width="2"/>
-                    <polygon points="13,10 13,22 23,16" fill="#00d4ff"/>
-                    <line x1="8" y1="26" x2="26" y2="6" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
-                </svg>
-            </div>
-            <div>
-                <div class="main-title">Distraction-Free<br>for <span>YouTube</span></div>
-            </div>
-        </div>
+  <!--
+    440 × 280 px  —  Lucent promo tile (Monolith design)
+    EXPORT INSTRUCTIONS:
+      1. Open this file in Chrome at 100% zoom (Ctrl+0)
+      2. DevTools → right-click the <svg> element → "Capture node screenshot"
+      3. Save as promo_tile_440x280.png
+      4. Upload to Chrome Web Store → Graphics → Small promo tile
+  -->
 
-        <div class="tagline">Block Shorts · Hide recommendations · Lock video quality</div>
+  <svg width="440" height="280" viewBox="0 0 440 280"
+       xmlns="http://www.w3.org/2000/svg"
+       style="display:block;">
 
-        <div class="pills">
-            <div class="pill accent">Block Shorts</div>
-            <div class="pill accent">HD Quality Lock</div>
-            <div class="pill">Hide Sidebar</div>
-            <div class="pill">Blur Thumbnails</div>
-            <div class="pill">Playback Speed</div>
-            <div class="pill">Social Detox</div>
-            <div class="pill">Pause on Load</div>
-        </div>
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#141414"/>
+        <stop offset="100%" stop-color="#080808"/>
+      </linearGradient>
+      <radialGradient id="iconGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#FF2020" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="#FF2020" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+        <stop offset="50%"  stop-color="black" stop-opacity="0"/>
+        <stop offset="100%" stop-color="black" stop-opacity="0.45"/>
+      </radialGradient>
+      <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.3" stroke-opacity="0.04"/>
+      </pattern>
+    </defs>
 
-        <div class="bottom-bar"></div>
-    </div>
+    <rect width="440" height="280" fill="url(#bg)"/>
+    <rect width="440" height="280" fill="url(#grid)"/>
+    <rect width="440" height="280" fill="url(#vignette)"/>
 
-    <!--
-        INSTRUCTIONS:
-        1. Open this file in Chrome
-        2. Set Chrome zoom to 100% (Ctrl+0)
-        3. Open DevTools → right-click the <body> element → Capture node screenshot
-           (or use any browser screenshot tool set to exactly 440×280)
-        4. Save the result as promo_tile_440x280.png
-        5. Upload to Chrome Web Store dashboard under "Small promo tile"
-    -->
+    <!-- Red accent bar -->
+    <rect x="44" y="42" width="3" height="60" rx="1.5" fill="#FF0000"/>
+
+    <!-- Wordmark -->
+    <text x="56" y="88"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="62" font-weight="800" letter-spacing="-2"
+          fill="white">LUCENT</text>
+
+    <!-- Divider -->
+    <line x1="56" y1="104" x2="200" y2="104" stroke="white" stroke-width="1" stroke-opacity="0.12"/>
+
+    <!-- Subtitle -->
+    <text x="56" y="126"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="13" font-weight="400" fill="white" fill-opacity="0.45" letter-spacing="0.1">
+      Intentional YouTube &amp; Auto HD
+    </text>
+
+    <!-- Feature bullets -->
+    <circle cx="57" cy="163" r="3" fill="#FF0000" fill-opacity="0.9"/>
+    <text x="68" y="167"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="11.5" fill="white" fill-opacity="0.6">No Shorts · No Sidebar · No Noise</text>
+
+    <circle cx="57" cy="185" r="3" fill="#FF0000" fill-opacity="0.9"/>
+    <text x="68" y="189"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="11.5" fill="white" fill-opacity="0.6">Auto HD · Custom Speed · Pause on Load</text>
+
+    <circle cx="57" cy="207" r="3" fill="#FF0000" fill-opacity="0.9"/>
+    <text x="68" y="211"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="11.5" fill="white" fill-opacity="0.6">Blur Thumbnails · Social Detox</text>
+
+    <!-- Free badge -->
+    <rect x="44" y="242" width="92" height="22" rx="11" fill="white" fill-opacity="0.06" stroke="white" stroke-opacity="0.12" stroke-width="1"/>
+    <text x="90" y="257" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="10" font-weight="600" letter-spacing="0.06em" fill="white" fill-opacity="0.45">FREE FOR CHROME</text>
+
+    <!-- Column separator -->
+    <line x1="262" y1="50" x2="262" y2="230" stroke="white" stroke-opacity="0.05" stroke-width="1"/>
+
+    <!-- Icon glow halo -->
+    <ellipse cx="344" cy="138" rx="80" ry="80" fill="url(#iconGlow)"/>
+
+    <!-- Icon background -->
+    <rect x="290" y="84" width="110" height="110" rx="22"
+          fill="#0A0A0A" stroke="#1E1E1E" stroke-width="1.5"/>
+
+    <!-- Icon: L vertical bar -->
+    <rect x="309" y="101" width="17" height="71" rx="4" fill="white"/>
+    <!-- Icon: L horizontal bar -->
+    <rect x="309" y="155" width="71" height="17" rx="4" fill="white"/>
+    <!-- Icon: Red play -->
+    <polygon points="336,104 336,151 376,127" fill="#FF0000"/>
+
+    <!-- Bottom red stripe -->
+    <rect x="0" y="277" width="440" height="3" fill="#FF0000" fill-opacity="0.6"/>
+
+  </svg>
+
 </body>
 </html>

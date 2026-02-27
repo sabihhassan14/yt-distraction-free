@@ -6,10 +6,8 @@ const DEFAULT_SETTINGS = {
     blockShorts: true,
     blockHomepage: true,
     blockSidebar: true,
-    blockEndscreen: true,
-    blockWatermark: true,
+    blockPlayerOverlays: true,
     minimizeChat: true,
-    blockInfoCards: true,
     blockChannelAutoplay: true,
     redirectChannelHome: true,
     pauseOnLoad: false,
@@ -39,7 +37,7 @@ function loadSettings() {
         }
 
         // Update checkboxes
-        const toggles = ['blockShorts', 'blockHomepage', 'blockSidebar', 'blockEndscreen', 'blockWatermark', 'minimizeChat', 'blockInfoCards', 'blockChannelAutoplay', 'redirectChannelHome', 'pauseOnLoad', 'blurThumbnails', 'hideMetrics'];
+        const toggles = ['blockShorts', 'blockHomepage', 'blockSidebar', 'blockPlayerOverlays', 'minimizeChat', 'blockChannelAutoplay', 'redirectChannelHome', 'pauseOnLoad', 'blurThumbnails', 'hideMetrics'];
         toggles.forEach(id => {
             const el = document.getElementById(id);
             if (el) {
@@ -116,10 +114,8 @@ function saveSettings() {
         blockShorts: document.getElementById('blockShorts').checked,
         blockHomepage: document.getElementById('blockHomepage').checked,
         blockSidebar: document.getElementById('blockSidebar').checked,
-        blockEndscreen: document.getElementById('blockEndscreen').checked,
-        blockWatermark: document.getElementById('blockWatermark').checked,
+        blockPlayerOverlays: document.getElementById('blockPlayerOverlays').checked,
         minimizeChat: document.getElementById('minimizeChat').checked,
-        blockInfoCards: document.getElementById('blockInfoCards').checked,
         blockChannelAutoplay: document.getElementById('blockChannelAutoplay').checked,
         redirectChannelHome: document.getElementById('redirectChannelHome').checked,
         pauseOnLoad: document.getElementById('pauseOnLoad').checked,
