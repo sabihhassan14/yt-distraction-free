@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Lucent – Intentional Youtube & Auto HD",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Eliminate distractions and customise YouTube's viewing experience.",
   "permissions": [
     "storage"
