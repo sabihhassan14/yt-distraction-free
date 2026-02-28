@@ -6,6 +6,7 @@ const DEFAULT_SETTINGS = {
     blockShorts: true,
     blockHomepage: true,
     blockSidebar: true,
+    centerPlayer: false,
     blockPlayerOverlays: true,
     minimizeChat: true,
     blockChannelAutoplay: true,
@@ -37,7 +38,7 @@ function loadSettings() {
         }
 
         // Update checkboxes
-        const toggles = ['blockShorts', 'blockHomepage', 'blockSidebar', 'blockPlayerOverlays', 'minimizeChat', 'blockChannelAutoplay', 'redirectChannelHome', 'pauseOnLoad', 'blurThumbnails', 'hideMetrics'];
+        const toggles = ['blockShorts', 'blockHomepage', 'blockSidebar', 'centerPlayer', 'blockPlayerOverlays', 'minimizeChat', 'blockChannelAutoplay', 'redirectChannelHome', 'pauseOnLoad', 'blurThumbnails', 'hideMetrics'];
         toggles.forEach(id => {
             const el = document.getElementById(id);
             if (el) {
@@ -51,7 +52,24 @@ function loadSettings() {
 
         const speedControl = document.getElementById('speedControl');
         if (speedControl) speedControl.value = settings.speedControl || '1';
+
+        // Show/hide sub-toggle based on loaded sidebar state
+        updateCenterPlayerVisibility();
     });
+}
+
+/**
+ * Show/hide the Center Player sub-toggle based on Sidebar state
+ */
+function updateCenterPlayerVisibility() {
+    const sidebarOn = document.getElementById('blockSidebar').checked;
+    const row = document.getElementById('centerPlayerRow');
+    if (!row) return;
+    if (sidebarOn) {
+        row.classList.remove('hidden');
+    } else {
+        row.classList.add('hidden');
+    }
 }
 
 /**
@@ -68,6 +86,10 @@ function setupEventListeners() {
             saveSettings();
         });
     });
+
+    // Keep Center Player sub-toggle visibility in sync with Sidebar toggle
+    const sidebarToggle = document.getElementById('blockSidebar');
+    if (sidebarToggle) sidebarToggle.addEventListener('change', updateCenterPlayerVisibility);
 
     // Support Menu Logic
     const supportBtn = document.getElementById('supportBtn');
@@ -114,6 +136,7 @@ function saveSettings() {
         blockShorts: document.getElementById('blockShorts').checked,
         blockHomepage: document.getElementById('blockHomepage').checked,
         blockSidebar: document.getElementById('blockSidebar').checked,
+        centerPlayer: document.getElementById('centerPlayer').checked,
         blockPlayerOverlays: document.getElementById('blockPlayerOverlays').checked,
         minimizeChat: document.getElementById('minimizeChat').checked,
         blockChannelAutoplay: document.getElementById('blockChannelAutoplay').checked,

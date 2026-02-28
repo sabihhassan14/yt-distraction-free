@@ -227,6 +227,37 @@ input:checked+.slider:before {
     transform: translateX(20px);
 }
 
+/* Sub-toggle (indented child of a setting-item) */
+.setting-sub-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px 8px 28px;
+    background: rgba(255, 255, 255, 0.015);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    margin-left: 18px;
+    border-left: 2px solid var(--accent);
+    border-top: 1px solid transparent;
+    border-right: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.setting-sub-item.hidden {
+    display: none;
+}
+
+.setting-sub-item .label {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.setting-sub-item .desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+}
+
 /* Select */
 .setting-item.vertical {
     flex-direction: column;

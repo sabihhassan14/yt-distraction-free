@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS = {
     blockShorts: true,
     blockHomepage: true,
     blockSidebar: true,
+    centerPlayer: false,
     blockPlayerOverlays: true,
     minimizeChat: true,
     blockChannelAutoplay: true,
@@ -205,9 +206,12 @@ function buildBlockingCSS() {
             display:none !important;height:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;
         }
         #secondary,#secondary-inner,#related{
-            display:${s.blockSidebar ? 'none' : 'block'} !important;
+            ${s.blockSidebar && s.centerPlayer
+                ? 'display:block !important;visibility:hidden !important;pointer-events:none !important;'
+                : `display:${s.blockSidebar ? 'none' : 'block'} !important;visibility:visible !important;`
+            }
         }
-        ytd-watch-two-column-results-renderer{display:grid !important;grid-template-columns:${s.blockSidebar ? '1fr' : '1fr 390px'} !important}
+        ytd-watch-two-column-results-renderer{display:grid !important;grid-template-columns:${s.blockSidebar && !s.centerPlayer ? '1fr' : '1fr 390px'} !important}
         .ytp-watermark,.iv-branding{display:${s.blockPlayerOverlays ? 'none' : 'block'} !important}
         /* End screens and pause overlay — use all four properties to beat
            any specificity or inline-style override YouTube may apply */

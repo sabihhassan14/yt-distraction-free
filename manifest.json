@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Lucent – Intentional Youtube & Auto HD",
   "version": "1.0.1",
-  "description": "Block Shorts, hide recommendations & sidebar, auto-lock HD quality, control playback speed and blur thumbnails. Free.",
+  "description": "Eliminate distractions and customise YouTube's viewing experience.",
   "permissions": [
     "storage"
   ],

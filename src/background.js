@@ -7,6 +7,7 @@ const DEFAULT_SETTINGS = {
     blockShorts: true,
     blockHomepage: true,
     blockSidebar: true,
+    centerPlayer: false,
     blockPlayerOverlays: true,
     minimizeChat: true,
     blockChannelAutoplay: true,
