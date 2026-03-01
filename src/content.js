@@ -123,10 +123,12 @@ function init() {
     // Also reset the redirect guard so the next channel navigation works.
     window.addEventListener('yt-navigate-finish', () => {
         _redirectInFlight = false;
+        gridAutoFlowSet = false; // allow re-priming per navigation
         setTimeout(() => {
             setupGridFixObserver();
             if (currentSettings.blockChannelAutoplay) preventChannelAutoplay();
             if (currentSettings.hideMetrics) hideSubscriberCountsJS();
+            if (currentSettings.blockShorts) hideShortsDOM();
         }, 800);
     });
 }
@@ -205,13 +207,16 @@ function buildBlockingCSS() {
         ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts="true"]){
             display:none !important;height:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;
         }
-        #secondary,#secondary-inner,#related{
+        /* Watch-only layout tweaks so search pages keep their full width */
+        ytd-watch-flexy #secondary,
+        ytd-watch-flexy #secondary-inner,
+        ytd-watch-flexy #related{
             ${s.blockSidebar && s.centerPlayer
                 ? 'display:block !important;visibility:hidden !important;pointer-events:none !important;'
                 : `display:${s.blockSidebar ? 'none' : 'block'} !important;visibility:visible !important;`
             }
         }
-        ytd-watch-two-column-results-renderer{display:grid !important;grid-template-columns:${s.blockSidebar && !s.centerPlayer ? '1fr' : '1fr 390px'} !important}
+        ytd-watch-flexy ytd-watch-two-column-results-renderer{display:grid !important;grid-template-columns:${s.blockSidebar && !s.centerPlayer ? '1fr' : '1fr 390px'} !important}
         .ytp-watermark,.iv-branding{display:${s.blockPlayerOverlays ? 'none' : 'block'} !important}
         /* End screens and pause overlay — use all four properties to beat
            any specificity or inline-style override YouTube may apply */
@@ -403,12 +408,29 @@ function hideSubscriberCountsJS() {
  * row slots stay empty because subsequent items have absolute row numbers.
  * Fix: strip the inline grid placement so CSS auto-placement fills the gaps.
  */
+let gridFixScheduled = false;
+let gridAutoFlowSet = false;
 function fixGridLayout() {
-    const contents = document.querySelector('ytd-rich-grid-renderer #contents');
-    if (!contents) return;
-    contents.querySelectorAll('ytd-rich-item-renderer, ytd-rich-section-renderer').forEach(el => {
-        el.style.removeProperty('grid-row');
-        el.style.removeProperty('grid-column');
+    if (gridFixScheduled) return;
+    gridFixScheduled = true;
+
+    requestAnimationFrame(() => {
+        gridFixScheduled = false;
+        const contents = document.querySelector('ytd-rich-grid-renderer #contents');
+        if (!contents) return;
+
+        // Encourage the grid to backfill gaps left by hidden shelves/cards (set once per page)
+        if (!gridAutoFlowSet) {
+            contents.style.setProperty('grid-auto-flow', 'row dense', 'important');
+            gridAutoFlowSet = true;
+        }
+
+        contents.querySelectorAll(
+            'ytd-rich-item-renderer, ytd-rich-section-renderer, ytd-rich-grid-slim-media, ytd-rich-grid-media'
+        ).forEach(el => {
+            el.style.removeProperty('grid-row');
+            el.style.removeProperty('grid-column');
+        });
     });
 }
 
@@ -422,15 +444,18 @@ function setupGridFixObserver() {
     if (!contents) return;
 
     gridFixObserver = new MutationObserver((mutations) => {
-        const hasRelevantChange = mutations.some(m =>
-            m.addedNodes.length > 0 ||
-            (m.type === 'attributes' && (m.attributeName === 'style' || m.attributeName === 'class'))
-        );
-        if (hasRelevantChange) debouncedFixGrid();
+        const hasAdded = mutations.some(m => m.addedNodes && m.addedNodes.length > 0);
+        if (hasAdded) debouncedFixGrid();
     });
 
-    gridFixObserver.observe(contents, { childList: true, attributes: true, attributeFilter: ['style', 'class'] });
-    fixGridLayout();
+    gridFixObserver.observe(contents, { childList: true });
+
+    // Initial pass after first paint to avoid blocking thumbnail render
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => debouncedFixGrid(), { timeout: 400 });
+    } else {
+        setTimeout(() => debouncedFixGrid(), 120);
+    }
 }
 
 /**
@@ -460,13 +485,6 @@ function setupMutationObservers() {
         });
         if (shouldReblock) debouncedReapply();
     });
-
-    // Periodic checks — only JS-dependent features that CSS cannot handle alone
-    setInterval(() => {
-        if (currentSettings.blockChannelAutoplay) preventChannelAutoplay();
-        if (currentSettings.hideMetrics) hideSubscriberCountsJS();
-        if (currentSettings.blockShorts) hideShortsDOM();
-    }, 1500);
 
     // Wait for ytd-app then start the main observer
     const waitForApp = setInterval(() => {
