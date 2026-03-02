@@ -103,6 +103,7 @@ function init() {
         applyBlocking();
         setupMutationObservers();
         setupGridFixObserver();
+        if (currentSettings.blockChannelAutoplay) scheduleChannelAutoplayStop();
     });
 
     // 1. Instant catch for SPA navigation (before rendering starts).
@@ -126,10 +127,15 @@ function init() {
         gridAutoFlowSet = false; // allow re-priming per navigation
         setTimeout(() => {
             setupGridFixObserver();
-            if (currentSettings.blockChannelAutoplay) preventChannelAutoplay();
+            if (currentSettings.blockChannelAutoplay) scheduleChannelAutoplayStop();
             if (currentSettings.hideMetrics) hideSubscriberCountsJS();
             if (currentSettings.blockShorts) hideShortsDOM();
         }, 800);
+    });
+
+    // Channel pages often hydrate after navigation; re-run stop once data lands
+    window.addEventListener('yt-page-data-updated', () => {
+        if (currentSettings.blockChannelAutoplay) scheduleChannelAutoplayStop();
     });
 }
 
@@ -559,10 +565,7 @@ function hideShortsDOM() {
  * Specifically targets and pauses the featured video on channel homepages
  */
 function preventChannelAutoplay() {
-    // Only run on channel pages (identified by @ or certain URL structures)
-    if (!window.location.pathname.includes('/@') && !window.location.pathname.includes('/channel/')) {
-        return;
-    }
+    if (!isChannelLanding()) return;
 
     // Target the featured video player renderer
     const featuredPlayer = document.querySelector('ytd-channel-video-player-renderer #movie_player');
@@ -580,6 +583,39 @@ function preventChannelAutoplay() {
     if (video && !video.paused) {
         video.pause();
     }
+}
+
+function isChannelLanding() {
+    const path = window.location.pathname;
+    const parts = path.split('/').filter(Boolean);
+
+    // /@handle[/featured] or /channel/ID[/featured] or /user/ID[/featured]
+    const isHandle = parts.length >= 1 && parts[0].startsWith('@');
+    const isChannelId = parts.length >= 2 && parts[0] === 'channel';
+    const isUser = parts.length >= 2 && parts[0] === 'user';
+
+    // If explicitly on /videos or /streams tabs, skip
+    const last = parts[parts.length - 1] || '';
+    if (['videos', 'streams', 'shorts', 'playlists'].includes(last)) return false;
+
+    return isHandle || isChannelId || isUser;
+}
+
+function scheduleChannelAutoplayStop() {
+    if (!isChannelLanding()) return;
+
+    let attempts = 0;
+    const maxAttempts = 8;
+
+    const tick = () => {
+        preventChannelAutoplay();
+        attempts += 1;
+        if (attempts < maxAttempts && isChannelLanding()) {
+            setTimeout(tick, 350);
+        }
+    };
+
+    tick();
 }
 
 // Re-entry guard: prevents a double-redirect when YouTube's own SPA router

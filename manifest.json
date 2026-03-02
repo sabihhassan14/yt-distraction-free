@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Lucent: YouTube™ Focus Mode & Auto 4K",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Hide suggestions and homepage noise, block Shorts, auto 4K and playback speed on YouTube.",
   "permissions": [
     "storage"

@@ -306,8 +306,9 @@
         }
     }
 
-    // Mark as navigated on SPA events
+    // Mark as navigated on SPA events (do NOT cancel pause-on-load for the first hard load)
     window.addEventListener('yt-navigate-start', () => {
+        if (isHardLoad) return; // initial tab load should still allow pausing
         window.ytdf_navigated = true;
         hasPausedOnLoad = true;
     });
