@@ -1,6 +1,6 @@
 {
   "name": "youtube-distraction-free-extension",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Chrome extension for distraction-free YouTube with automatic quality control",
   "main": "generate_icons_node.js",
   "scripts": {
