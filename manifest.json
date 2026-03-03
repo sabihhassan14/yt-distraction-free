@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Lucent: YouTube™ Focus Mode & Auto 4K",
   "version": "1.0.5",
-  "description": "Eliminate YouTube distractions with one click. Hides Shorts, recommendations, and end screens while automatically enforcing your preferred video quality. Privacy-first, zero tracking.",
+  "description": "Block Shorts, recommendations and end screens. Auto-enforce video quality and playback speed. Privacy-first, zero tracking.",
   "permissions": [
     "storage"
   ],
