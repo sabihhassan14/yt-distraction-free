@@ -574,6 +574,7 @@ function preventChannelAutoplay() {
         try {
             if (featuredPlayer.getPlayerState() === 1) {
                 featuredPlayer.pauseVideo();
+                showChannelPlayerControls(featuredPlayer);
             }
         } catch (e) { }
     }
@@ -582,7 +583,11 @@ function preventChannelAutoplay() {
     const video = document.querySelector('ytd-channel-video-player-renderer video');
     if (video && !video.paused) {
         video.pause();
+        showChannelPlayerControls(featuredPlayer || video);
     }
+
+    // Guard against hover-triggered preview autoplay
+    attachChannelHoverGuard();
 }
 
 function isChannelLanding() {
@@ -616,6 +621,29 @@ function scheduleChannelAutoplayStop() {
     };
 
     tick();
+}
+
+function attachChannelHoverGuard() {
+    const container = document.querySelector('ytd-channel-video-player-renderer');
+    if (!container) return;
+    const video = container.querySelector('video');
+    if (!video || video.hasAttribute('data-ytdf-hover-guard')) return;
+
+    const handler = () => {
+        video.pause();
+        showChannelPlayerControls(container.querySelector('#movie_player') || video);
+    };
+
+    video.addEventListener('mouseenter', handler, true);
+    video.addEventListener('mouseover', handler, true);
+    video.setAttribute('data-ytdf-hover-guard', '');
+}
+
+function showChannelPlayerControls(el) {
+    if (!el) return;
+    const evt = new MouseEvent('mousemove', { bubbles: true, cancelable: true, view: window });
+    el.dispatchEvent(evt);
+    setTimeout(() => el.dispatchEvent(evt), 120);
 }
 
 // Re-entry guard: prevents a double-redirect when YouTube's own SPA router

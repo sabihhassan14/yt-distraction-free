@@ -447,3 +447,31 @@ input:checked+.slider:before {
         opacity: 0.6;
     }
 }
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.75rem;
+}
+
+.footer-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+}
+
+.light-mode .footer-link {
+    color: #475569;
+}
+
+.light-mode .footer-link:hover {
+    color: #0f172a;
+}
