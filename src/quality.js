@@ -29,8 +29,28 @@
         'small': ['small'],
     };
 
+    // ─── Settings cache ────────────────────────────────────────────────────
+    // Populated from localStorage on init; refreshed on every ytdf-settings-updated
+    // event (fired by content.js after each storage write). Avoids repeated
+    // localStorage reads inside the 500 ms burst-poll loop.
+    const _settings = {
+        quality:        localStorage.getItem('ytdf_quality')         || 'auto',
+        speed:          localStorage.getItem('ytdf_speed')           || '1',
+        playerOverlays: localStorage.getItem('ytdf_player_overlays') !== '0',
+        pauseOnLoad:    localStorage.getItem('ytdf_pause_on_load')   === '1',
+    };
+    window.addEventListener('ytdf-settings-updated', () => {
+        _settings.quality        = localStorage.getItem('ytdf_quality')         || 'auto';
+        _settings.speed          = localStorage.getItem('ytdf_speed')           || '1';
+        _settings.playerOverlays = localStorage.getItem('ytdf_player_overlays') !== '0';
+        _settings.pauseOnLoad    = localStorage.getItem('ytdf_pause_on_load')   === '1';
+        // Re-apply quality immediately with the freshly cached values
+        const player = getPlayer();
+        if (player) applyQuality(player);
+    });
+
     function getDesiredQuality() {
-        const val = localStorage.getItem('ytdf_quality');
+        const val = _settings.quality;
         if (!val || val === 'auto') return null;
         return qualityMap[val] || null;
     }
@@ -86,7 +106,7 @@
     // ─── Playback Speed Control ───────────────────────────────────────────
 
     function getDesiredSpeed() {
-        const val = localStorage.getItem('ytdf_speed');
+        const val = _settings.speed;
         if (!val || val === '1') return null; // 1x = native, no override
         const n = parseFloat(val);
         return (isFinite(n) && n > 0 && n <= 16) ? n : null;
@@ -96,7 +116,8 @@
         const speed = getDesiredSpeed();
         if (!speed) return;
         try {
-            const video = document.querySelector('video.html5-main-video');
+            // Fallback to any <video> for embedded context where html5-main-video may be absent
+            const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
             if (video && video.playbackRate !== speed) {
                 video.playbackRate = speed;
             }
@@ -110,12 +131,11 @@
     // ─── Endscreen / pause-overlay blocking ───────────────────────────────────
 
     function shouldBlockEndscreen() {
-        const val = localStorage.getItem('ytdf_player_overlays');
-        return val !== '0';
+        return _settings.playerOverlays;
     }
 
     function shouldPauseOnLoad() {
-        return localStorage.getItem('ytdf_pause_on_load') === '1';
+        return _settings.pauseOnLoad;
     }
 
     const ENDSCREEN_CSS = `
@@ -206,11 +226,16 @@
     // attributes (class/style) catches YouTube toggling visibility on existing elements.
     // We strip inline styles immediately — our CSS !important then hides them.
     let endscreenObs = null;
+    let _suppressDebounceTimer = null;
+    function debouncedSuppressEndscreen() {
+        clearTimeout(_suppressDebounceTimer);
+        _suppressDebounceTimer = setTimeout(suppressEndscreen, 80);
+    }
     function attachEndscreenObserver() {
         if (endscreenObs) endscreenObs.disconnect();
         const player = document.getElementById('movie_player');
         if (!player) return;
-        endscreenObs = new MutationObserver(() => suppressEndscreen());
+        endscreenObs = new MutationObserver(debouncedSuppressEndscreen);
         endscreenObs.observe(player, {
             childList: true,
             subtree: true,
@@ -343,14 +368,26 @@
         }, 500);
     }
 
-    /** Slow persistent poll: every 3 s while on a watch page.
-     *  Covers quality changes made in the popup after the burst has ended. */
+    /** Slow persistent poll: every 3 s while on a watch or embed page.
+     *  Covers quality changes made in the popup after the burst has ended.
+     *  Also detects player element re-creation (YouTube sometimes rebuilds
+     *  #movie_player mid-session) and restarts the burst poll when that happens. */
+    let _lastKnownPlayer = null;
     function startPersistentPoll() {
         if (persistTimer) clearInterval(persistTimer);
         persistTimer = setInterval(() => {
-            if (!location.pathname.startsWith('/watch')) return;
+            const isWatch = location.pathname.startsWith('/watch');
+            const isEmbed = location.pathname.startsWith('/embed/');
+            if (!isWatch && !isEmbed) return;
             const player = getPlayer();
-            if (player) applyQuality(player);
+            if (!player) return;
+            // Player element was re-created — restart burst to re-enforce settings
+            if (player !== _lastKnownPlayer) {
+                _lastKnownPlayer = player;
+                startBurstPolling();
+                return;
+            }
+            applyQuality(player);
         }, 3000);
     }
 

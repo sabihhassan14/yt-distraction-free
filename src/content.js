@@ -24,6 +24,11 @@ const DEFAULT_SETTINGS = {
 // Current settings — start with defaults so CSS injection is instant
 let currentSettings = { ...DEFAULT_SETTINGS };
 
+// True when running inside an embedded YouTube player (youtube.com/embed/* or inside
+// a third-party iframe). Skip all UI-blocking and navigation logic; only sync settings
+// so quality.js (MAIN world) can enforce quality and speed in the embed.
+const IS_EMBEDDED = window.self !== window.top || window.location.pathname.startsWith('/embed/');
+
 /**
  * Write all settings to localStorage in one pass so quality.js (MAIN world)
  * always has up-to-date values available synchronously.
@@ -75,6 +80,7 @@ function syncSettingsToLocalStorage(s) {
 // ── IMMEDIATE CSS injection at document_start (before DOM renders) ──
 // Uses synchronously-read settings so metric-hiding rules are present from frame 0.
 (function earlyInjectCSS() {
+    if (IS_EMBEDDED) return; // Embedded players don't need UI-blocking CSS
     const style = document.createElement('style');
     style.id = 'yt-df-blocking';
     style.textContent = buildBlockingCSS();
@@ -85,6 +91,20 @@ function syncSettingsToLocalStorage(s) {
  * Initialize the content script
  */
 function init() {
+    // In embedded context (youtube.com/embed/* or a third-party iframe):
+    // only sync settings to localStorage for quality.js — skip all UI logic.
+    if (IS_EMBEDDED) {
+        chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+            currentSettings = settings;
+            syncSettingsToLocalStorage(settings);
+            window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
+                detail: { blockEndscreen: !!settings.blockPlayerOverlays }
+            }));
+        });
+        chrome.runtime.onMessage.addListener(handleMessage);
+        return;
+    }
+
     // CSS was already injected synchronously at document_start.
     // If the <style> tag somehow got lost (edge case), re-inject it.
     if (!document.getElementById('yt-df-blocking')) injectBlockingCSS();
@@ -100,6 +120,10 @@ function init() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
         currentSettings = settings;
         syncSettingsToLocalStorage(settings);
+        // Notify quality.js that real storage values are now available
+        window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
+            detail: { blockEndscreen: !!settings.blockPlayerOverlays }
+        }));
         applyBlocking();
         setupMutationObservers();
         setupGridFixObserver();

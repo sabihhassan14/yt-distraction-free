@@ -1,13 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Lucent: YouTube™ Focus Mode & Auto 4K",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Block YouTube Shorts, recommendations and end screens. Auto-enforce video quality and speed. Privacy-first, zero tracking.",
   "permissions": [
     "storage"
   ],
   "host_permissions": [
-    "https://www.youtube.com/*"
+    "https://www.youtube.com/*",
+    "https://www.youtube-nocookie.com/*"
   ],
   "background": {
     "service_worker": "src/background.js"
@@ -15,22 +16,26 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.youtube.com/*"
+        "https://www.youtube.com/*",
+        "https://www.youtube-nocookie.com/*"
       ],
       "js": [
         "src/content.js"
       ],
-      "run_at": "document_start"
+      "run_at": "document_start",
+      "all_frames": true
     },
     {
       "matches": [
-        "https://www.youtube.com/*"
+        "https://www.youtube.com/*",
+        "https://www.youtube-nocookie.com/*"
       ],
       "js": [
         "src/quality.js"
       ],
       "run_at": "document_start",
-      "world": "MAIN"
+      "world": "MAIN",
+      "all_frames": true
     }
   ],
   "action": {

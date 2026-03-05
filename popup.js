@@ -121,6 +121,15 @@ function setupEventListeners() {
         });
     }
 
+    // Privacy Policy link - open as extension resource
+    const privacyPolicyLink = document.getElementById('privacyPolicyLink');
+    if (privacyPolicyLink) {
+        privacyPolicyLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            chrome.tabs.create({ url: chrome.runtime.getURL('privacy_policy.html') });
+        });
+    }
+
     // Close both menus when clicking elsewhere
     document.addEventListener('click', () => {
         supportMenu && supportMenu.classList.remove('active');
