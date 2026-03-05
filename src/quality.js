@@ -39,11 +39,14 @@
         playerOverlays: localStorage.getItem('ytdf_player_overlays') !== '0',
         pauseOnLoad:    localStorage.getItem('ytdf_pause_on_load')   === '1',
     };
-    window.addEventListener('ytdf-settings-updated', () => {
-        _settings.quality        = localStorage.getItem('ytdf_quality')         || 'auto';
-        _settings.speed          = localStorage.getItem('ytdf_speed')           || '1';
-        _settings.playerOverlays = localStorage.getItem('ytdf_player_overlays') !== '0';
-        _settings.pauseOnLoad    = localStorage.getItem('ytdf_pause_on_load')   === '1';
+    window.addEventListener('ytdf-settings-updated', (e) => {
+        const d = (e && e.detail) || {};
+        // Prefer values from event detail (populated by content.js from chrome.storage.sync).
+        // Falls back to localStorage for reliability on regular youtube.com tabs.
+        _settings.quality        = d.quality        !== undefined ? d.quality        : (localStorage.getItem('ytdf_quality')         || 'auto');
+        _settings.speed          = d.speed          !== undefined ? d.speed          : (localStorage.getItem('ytdf_speed')           || '1');
+        _settings.playerOverlays = d.playerOverlays !== undefined ? d.playerOverlays : (localStorage.getItem('ytdf_player_overlays') !== '0');
+        _settings.pauseOnLoad    = d.pauseOnLoad    !== undefined ? d.pauseOnLoad    : (localStorage.getItem('ytdf_pause_on_load')   === '1');
         // Re-apply quality immediately with the freshly cached values
         const player = getPlayer();
         if (player) applyQuality(player);

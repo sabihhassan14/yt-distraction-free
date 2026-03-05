@@ -98,7 +98,13 @@ function init() {
             currentSettings = settings;
             syncSettingsToLocalStorage(settings);
             window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
-                detail: { blockEndscreen: !!settings.blockPlayerOverlays }
+                detail: {
+                    blockEndscreen: !!settings.blockPlayerOverlays,
+                    quality:        settings.qualitySelect  || 'auto',
+                    speed:          settings.speedControl   || '1',
+                    playerOverlays: !!settings.blockPlayerOverlays,
+                    pauseOnLoad:    !!settings.pauseOnLoad,
+                }
             }));
         });
         chrome.runtime.onMessage.addListener(handleMessage);
@@ -122,7 +128,13 @@ function init() {
         syncSettingsToLocalStorage(settings);
         // Notify quality.js that real storage values are now available
         window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
-            detail: { blockEndscreen: !!settings.blockPlayerOverlays }
+            detail: {
+                blockEndscreen: !!settings.blockPlayerOverlays,
+                quality:        settings.qualitySelect  || 'auto',
+                speed:          settings.speedControl   || '1',
+                playerOverlays: !!settings.blockPlayerOverlays,
+                pauseOnLoad:    !!settings.pauseOnLoad,
+            }
         }));
         applyBlocking();
         setupMutationObservers();
@@ -183,7 +195,13 @@ function handleMessage(request, sender, sendResponse) {
         // blockEndscreen is toggled ON mid-session (the normal initEndscreen call
         // only runs on navigation, so popup toggles would otherwise be CSS-only).
         window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
-            detail: { blockEndscreen: !!currentSettings.blockPlayerOverlays }
+            detail: {
+                blockEndscreen: !!currentSettings.blockPlayerOverlays,
+                quality:        currentSettings.qualitySelect  || 'auto',
+                speed:          currentSettings.speedControl   || '1',
+                playerOverlays: !!currentSettings.blockPlayerOverlays,
+                pauseOnLoad:    !!currentSettings.pauseOnLoad,
+            }
         }));
 
         sendResponse({ success: true });
