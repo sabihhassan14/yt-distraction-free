@@ -323,6 +323,8 @@
     function handlePauseOnLoad() {
         if (hasPausedOnLoad || window.ytdf_navigated) return;
         if (!shouldPauseOnLoad()) return;
+        // Never pause in embedded context — user explicitly pressed play
+        if (window.self !== window.top || window.location.pathname.startsWith('/embed/')) return;
 
         const player = getPlayer();
         if (player && player.pauseVideo) {
@@ -334,9 +336,10 @@
         }
     }
 
-    // Mark as navigated on SPA events (do NOT cancel pause-on-load for the first hard load)
+    // Mark as navigated on SPA events so pause-on-load never fires mid-session.
+    // Pause-on-load is only meant for a hard load directly to /watch — once the
+    // user (or YouTube's router) navigates anywhere, we stop intercepting.
     window.addEventListener('yt-navigate-start', () => {
-        if (isHardLoad) return; // initial tab load should still allow pausing
         window.ytdf_navigated = true;
         hasPausedOnLoad = true;
     });
