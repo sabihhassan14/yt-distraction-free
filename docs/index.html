@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucent — Block YouTube™ Shorts, Auto HD/4K & Speed</title>
+    <meta name="description" content="Remove YouTube Shorts, recommendations and all other distractions. Auto-enforce HD/4K quality & speed. Privacy-first, zero tracking.">
+    <meta property="og:title" content="Lucent — Block YouTube™ Shorts, Auto HD/4K & Speed">
+    <meta property="og:description" content="Remove YouTube Shorts, recommendations and all other distractions. Auto-enforce HD/4K quality & speed. Privacy-first, zero tracking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sabihhassan14.github.io/yt-distraction-free/">
+    <link rel="icon" type="image/png" href="../images/icon48.png">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --bg2: #1e293b;
+            --accent: #ff0000;
+            --accent-dim: rgba(255,0,0,0.15);
+            --accent-glow: rgba(255,0,0,0.35);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.08);
+            --radius: 16px;
+            --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font);
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 40px;
+            background: rgba(15,23,42,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-brand img { width: 28px; height: 28px; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        /* ── HERO ── */
+        .hero {
+            text-align: center;
+            padding: 100px 24px 80px;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent-dim);
+            border: 1px solid rgba(255,0,0,0.3);
+            color: #ff6666;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 999px;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+
+        h1 span { color: var(--accent); }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 540px;
+            margin: 0 auto 36px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 26px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.15s, box-shadow 0.15s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover { transform: translateY(-2px); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover { box-shadow: 0 6px 28px var(--accent-glow); }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+
+        /* ── SECTION SHARED ── */
+        section { padding: 80px 24px; }
+
+        .section-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            margin-bottom: 14px;
+            letter-spacing: -0.01em;
+        }
+
+        .section-sub {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 540px;
+            margin-bottom: 48px;
+        }
+
+        /* ── FEATURES GRID ── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(255,0,0,0.3);
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 14px;
+        }
+
+        .feature-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        /* ── HOW IT WORKS ── */
+        #how { background: rgba(255,255,255,0.02); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 32px;
+            counter-reset: steps;
+        }
+
+        .step { position: relative; padding-left: 56px; }
+
+        .step::before {
+            counter-increment: steps;
+            content: counter(steps);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(255,0,0,0.3);
+            color: var(--accent);
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
+        .step p { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* ── PRIVACY ── */
+        .privacy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .privacy-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 22px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .privacy-card .check {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(16,185,129,0.15);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: #10b981;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .privacy-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+        .privacy-card p { font-size: 0.82rem; color: var(--text-muted); }
+
+        /* ── CTA BOTTOM ── */
+        .cta-section {
+            text-align: center;
+        }
+
+        .cta-section .section-title { margin-bottom: 12px; }
+        .cta-section p { color: var(--text-muted); margin-bottom: 32px; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .footer-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--text); }
+
+        footer p { color: var(--text-muted); font-size: 0.82rem; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            nav { padding: 14px 20px; }
+            .nav-links { display: none; }
+            .hero { padding: 70px 20px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="nav-brand">
+        <img src="../images/icon48.png" alt="Lucent icon">
+        Lucent
+    </a>
+    <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="privacy_policy.html">Privacy Policy</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section>
+    <div class="hero">
+        <div class="badge">Free Chrome & Edge Extension</div>
+        <h1>Take back control of<br><span>YouTube</span></h1>
+        <p>Block Shorts, hide recommendations, and auto-enforce HD/4K quality. Browse YouTube on your own terms — no distractions, no tracking.</p>
+        <div class="cta-group">
+            <a href="https://chromewebstore.google.com/detail/bpciannhcoipobpfeofondnhiadfcbib" target="_blank" class="btn btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+                Add to Chrome — It's Free
+            </a>
+            <a href="https://github.com/sabihhassan14/yt-distraction-free" target="_blank" class="btn btn-secondary">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                View on GitHub
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+    <div class="section-inner">
+        <div class="section-label">Features</div>
+        <h2 class="section-title">Everything you need, nothing you don't</h2>
+        <p class="section-sub">Twelve focused toggles that put you back in control of how you experience YouTube.</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🚫</div>
+                <h3>Block Shorts</h3>
+                <p>Completely removes Shorts shelves, reels, and navigation entries across the entire YouTube interface.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏠</div>
+                <h3>Hide Homepage Feed</h3>
+                <p>Clears the recommendation grid so you visit YouTube intentionally — not because the algorithm pulled you in.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📺</div>
+                <h3>Hide Sidebar</h3>
+                <p>Removes related video suggestions while watching, so you finish what you came for instead of clicking into a rabbit hole.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎬</div>
+                <h3>Auto HD / 4K Quality</h3>
+                <p>Enforces your chosen resolution on every video automatically — 720p, 1080p, 1440p or 4K. Works on embedded videos too.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Playback Speed Control</h3>
+                <p>Set a default speed from 0.25× to 3× and have it applied automatically on every video you open.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🖼️</div>
+                <h3>Block End Screens & Cards</h3>
+                <p>Hides end screens, watermarks, info cards and pause overlays so nothing interrupts your viewing experience.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Minimize Live Chat</h3>
+                <p>Automatically collapses live chat on streams so you can focus on the content.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🙈</div>
+                <h3>Blur Thumbnails</h3>
+                <p>Blurs all thumbnails until you hover, reducing impulsive clicking triggered by clickbait imagery.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Social Detox</h3>
+                <p>Hides subscriber counts, like counts, and comments — the metrics designed to trigger comparison and anxiety.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⏸️</div>
+                <h3>Pause on Load</h3>
+                <p>Pauses video when you open a new tab directly to a watch page, so you consciously choose to press play.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📁</div>
+                <h3>Auto Videos Tab</h3>
+                <p>Redirects channel home pages straight to the Videos tab, skipping the featured/promoted content.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🐛</div>
+                <h3>Report Bug</h3>
+                <p>Built-in feedback button links directly to GitHub Issues or email — making it easy to report problems.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+    <div class="section-inner">
+        <div class="section-label">How it works</div>
+        <h2 class="section-title">Simple to set up, runs silently</h2>
+        <p class="section-sub">No accounts, no sign-in, no configuration files. One click and it's working.</p>
+
+        <div class="steps">
+            <div class="step">
+                <h3>Install the extension</h3>
+                <p>Add Lucent from the Chrome Web Store with a single click. No permissions beyond YouTube are requested.</p>
+            </div>
+            <div class="step">
+                <h3>Open the popup</h3>
+                <p>Click the Lucent icon in your toolbar. All blocking features are on by default — you can turn off anything you don't want.</p>
+            </div>
+            <div class="step">
+                <h3>Set your quality & speed</h3>
+                <p>Pick your preferred resolution and playback speed from the dropdowns. They'll apply automatically on every video.</p>
+            </div>
+            <div class="step">
+                <h3>Browse YouTube your way</h3>
+                <p>Settings save instantly and sync across your signed-in Chrome devices. YouTube stays distraction-free everywhere.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRIVACY -->
+<section id="privacy">
+    <div class="section-inner">
+        <div class="section-label">Privacy</div>
+        <h2 class="section-title">Zero data collected. Full stop.</h2>
+        <p class="section-sub">Lucent has no backend, no analytics, no telemetry. Everything stays on your device.</p>
+
+        <div class="privacy-grid">
+            <div class="privacy-card">
+                <div class="check">✓</div>
+                <div>
+                    <h3>No personal data collected</h3>
+                    <p>Your browsing history, watch history, and identity are never accessed or stored.</p>
+                </div>
+            </div>
+            <div class="privacy-card">
+                <div class="check">✓</div>
+                <div>
+                    <h3>No remote servers</h3>
+                    <p>The extension never makes network requests to any server. It only communicates with YouTube's own page.</p>
+                </div>
+            </div>
+            <div class="privacy-card">
+                <div class="check">✓</div>
+                <div>
+                    <h3>No analytics or tracking</h3>
+                    <p>No usage statistics, crash reports, or telemetry of any kind are ever collected.</p>
+                </div>
+            </div>
+            <div class="privacy-card">
+                <div class="check">✓</div>
+                <div>
+                    <h3>Settings stay local</h3>
+                    <p>Your preferences are stored using chrome.storage.sync — synced only across your own signed-in Chrome devices.</p>
+                </div>
+            </div>
+            <div class="privacy-card">
+                <div class="check">✓</div>
+                <div>
+                    <h3>YouTube only</h3>
+                    <p>Lucent only activates on youtube.com and youtube-nocookie.com. It has no access to any other website.</p>
+                </div>
+            </div>
+            <div class="privacy-card">
+                <div class="check">✓</div>
+                <div>
+                    <h3>Open source</h3>
+                    <p>Every line of code is publicly available on GitHub. You can verify exactly what the extension does.</p>
+                </div>
+            </div>
+        </div>
+
+        <p style="margin-top: 28px; font-size: 0.88rem; color: var(--text-muted);">
+            Read the full <a href="privacy_policy.html" style="color: #60a5fa;">Privacy Policy</a>.
+        </p>
+    </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="cta-section">
+    <div class="section-inner">
+        <h2 class="section-title">Ready to watch YouTube without the noise?</h2>
+        <p>Free forever. No account needed. Works in seconds.</p>
+        <div class="cta-group">
+            <a href="https://chromewebstore.google.com/detail/bpciannhcoipobpfeofondnhiadfcbib" target="_blank" class="btn btn-primary">
+                Add to Chrome — It's Free
+            </a>
+            <a href="https://github.com/sabihhassan14/yt-distraction-free/issues/new" target="_blank" class="btn btn-secondary">
+                Report a Bug
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-links">
+            <a href="privacy_policy.html">Privacy Policy</a>
+            <a href="https://github.com/sabihhassan14/yt-distraction-free" target="_blank">GitHub</a>
+            <a href="https://chromewebstore.google.com/detail/bpciannhcoipobpfeofondnhiadfcbib/reviews" target="_blank">Rate on Chrome Web Store</a>
+            <a href="mailto:sabih942@gmail.com">Contact</a>
+        </div>
+        <p>Made by <a href="https://github.com/sabihhassan14" target="_blank" style="color: #60a5fa;">Sabih Hassan</a> · Not affiliated with YouTube or Google.</p>
+    </div>
+</footer>
+
+</body>
+</html>
