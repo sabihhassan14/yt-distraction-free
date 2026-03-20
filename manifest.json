@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Lucent — Block YouTube™ Shorts, Auto HD/4K & Speed",
-  "version": "1.0.8",
-  "description": "Remove YouTube Shorts, recommendations and all other distractions. Auto-enforce HD/4K quality & speed. Privacy-first, zero tracking.",
+  "name": "Block YouTube Shorts + Auto HD/4K",
+  "version": "1.0.9",
+  "description": "Remove YouTube Shorts and all other distractions. Automatically set video quality & playback speed. Privacy-first, zero tracking.",
   "permissions": [
     "storage"
   ],
@@ -40,7 +40,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Lucent — Block YouTube™ Shorts, Auto HD/4K & Speed",
+    "default_title": "Block YouTube Shorts + Auto HD/4K",
     "default_icon": {
       "16": "images/icon16.png",
       "32": "images/icon32.png",

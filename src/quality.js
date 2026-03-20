@@ -79,7 +79,9 @@
             const variant = (fpsVariants[base] || []).find(v => available.includes(v));
             if (variant) return variant;
         }
-        return target;
+        // If nothing matched in ordered list, return the highest available quality.
+        // YouTube returns available qualities ordered from best to worst.
+        return available[0] || target;
     }
 
     function applyQuality(player) {
