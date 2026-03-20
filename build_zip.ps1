@@ -32,6 +32,8 @@ $include = @(
     "_locales\it\messages.json",
     "_locales\pl\messages.json",
     "_locales\nl\messages.json",
+    "_locales\ar\messages.json",
+    "_locales\hi\messages.json",
     "LICENSE",
     "privacy_policy.html"
 )
