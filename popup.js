@@ -21,11 +21,26 @@ const DEFAULT_SETTINGS = {
 
 // Initialize popup on page load
 document.addEventListener('DOMContentLoaded', () => {
+    applyLocaleDirection();
     localizeUI();
     loadTheme();
     loadSettings();
     setupEventListeners();
 });
+
+function applyLocaleDirection() {
+    const uiLocale = (chrome.i18n && chrome.i18n.getUILanguage)
+        ? chrome.i18n.getUILanguage()
+        : 'en';
+
+    const rtlLangs = ['ar', 'fa', 'he', 'ur'];
+    const baseLang = (uiLocale || 'en').toLowerCase().split(/[-_]/)[0];
+    const isRtl = rtlLangs.includes(baseLang);
+
+    document.documentElement.lang = uiLocale || 'en';
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    document.body.classList.toggle('rtl', isRtl);
+}
 
 function t(key, fallback = '') {
     try {

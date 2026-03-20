@@ -475,3 +475,31 @@ input:checked+.slider:before {
 .light-mode .footer-link:hover {
     color: #0f172a;
 }
+
+/* RTL support for Arabic and other RTL locales */
+html[dir="rtl"] .settings-group h3,
+html[dir="rtl"] .setting-item .label,
+html[dir="rtl"] .setting-item .desc,
+html[dir="rtl"] .setting-sub-item .label,
+html[dir="rtl"] .setting-sub-item .desc,
+html[dir="rtl"] .setting-item.vertical label {
+    text-align: right;
+}
+
+html[dir="rtl"] .setting-item:not(.vertical),
+html[dir="rtl"] .setting-sub-item,
+html[dir="rtl"] .footer-actions {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .setting-sub-item {
+    padding: 8px 28px 8px 12px;
+    margin-left: 0;
+    margin-right: 18px;
+    border-left: 1px solid transparent;
+    border-right: 2px solid var(--accent);
+}
+
+html[dir="rtl"] .menu-item {
+    flex-direction: row-reverse;
+}
