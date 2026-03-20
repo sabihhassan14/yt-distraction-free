@@ -12,15 +12,17 @@
         '720': 'hd720',
         '1080': 'hd1080',
         '1440': 'hd1440',
-        '2160': 'hd2160'
+        '2160': 'hd2160',
+        '4320': 'hd4320'
     };
     // Ordered from best to worst (base labels only)
-    const ordered = ['hd2160', 'hd1440', 'hd1080', 'hd720', 'medium', 'small'];
+    const ordered = ['hd4320', 'hd2160', 'hd1440', 'hd1080', 'hd720', 'medium', 'small'];
 
     // All known fps/hdr variants grouped by base resolution.
     // When "force same quality for all frame rates" is ON, if the base label
     // isn't available we accept any variant at the same resolution.
     const fpsVariants = {
+        'hd4320': ['hd4320', 'highres'],
         'hd2160': ['hd2160', 'hd216060', 'hd2160hdr', 'hd2160p2'],
         'hd1440': ['hd1440', 'hd144060', 'hd1440hdr'],
         'hd1080': ['hd1080', 'hd108060', 'hd1080hdr', 'hd1080premium'],

@@ -1,0 +1,182 @@
+{
+  "extName": {
+    "message": "YouTube Shorts 차단 + 자동 HD/4K"
+  },
+  "extDescription": {
+    "message": "YouTube Shorts 및 기타 모든 방해 요소를 제거합니다. 동영상 화질과 재생 속도를 자동으로 설정합니다. 개인정보 보호 중심, 추적 없음."
+  },
+  "actionTitle": {
+    "message": "YouTube Shorts 차단 + 자동 HD/4K"
+  },
+  "popupTitle": {
+    "message": "YouTube Shorts 차단 + 자동 HD/4K"
+  },
+  "themeToggleTitle": {
+    "message": "테마 전환"
+  },
+  "coreBlocking": {
+    "message": "핵심 차단"
+  },
+  "videoEngine": {
+    "message": "비디오 엔진"
+  },
+  "shorts": {
+    "message": "Shorts"
+  },
+  "shortsDesc": {
+    "message": "Shorts를 완전히 숨기기"
+  },
+  "homepage": {
+    "message": "홈페이지"
+  },
+  "homepageDesc": {
+    "message": "추천 콘텐츠 숨기기"
+  },
+  "sidebar": {
+    "message": "사이드바"
+  },
+  "sidebarDesc": {
+    "message": "관련 동영상 숨기기"
+  },
+  "leftAlignPlayer": {
+    "message": "플레이어 왼쪽 정렬"
+  },
+  "leftAlignPlayerDesc": {
+    "message": "플레이어를 왼쪽 가장자리에 고정"
+  },
+  "playerOverlays": {
+    "message": "플레이어 오버레이"
+  },
+  "playerOverlaysDesc": {
+    "message": "엔드스크린, 워터마크 및 정보 카드를 숨기기"
+  },
+  "liveChat": {
+    "message": "라이브 채팅"
+  },
+  "liveChatDesc": {
+    "message": "채팅 항상 최소화"
+  },
+  "channelAutoplay": {
+    "message": "채널 자동재생"
+  },
+  "channelAutoplayDesc": {
+    "message": "채널 홈에서 동영상 일시정지"
+  },
+  "autoVideosTab": {
+    "message": "자동 동영상 탭"
+  },
+  "autoVideosTabDesc": {
+    "message": "홈을 동영상 탭으로 리디렉션"
+  },
+  "blurThumbnails": {
+    "message": "썸네일 흐리게"
+  },
+  "blurThumbnailsDesc": {
+    "message": "마우스 오버 시에만 이미지 표시"
+  },
+  "socialDetox": {
+    "message": "소셜 디톡스"
+  },
+  "socialDetoxDesc": {
+    "message": "구독자, 좋아요, 댓글 숨기기"
+  },
+  "pauseOnLoad": {
+    "message": "로드 시 일시정지"
+  },
+  "pauseOnLoadDesc": {
+    "message": "새 탭에서 자동재생 중지"
+  },
+  "enforceResolution": {
+    "message": "해상도 강제"
+  },
+  "qualityAuto": {
+    "message": "자동 (기본)"
+  },
+  "quality360": {
+    "message": "360p"
+  },
+  "quality480": {
+    "message": "480p"
+  },
+  "quality720": {
+    "message": "720p (HD)"
+  },
+  "quality1080": {
+    "message": "1080p (FHD)"
+  },
+  "quality1440": {
+    "message": "1440p (2K)"
+  },
+  "quality2160": {
+    "message": "2160p (4K)"
+  },
+  "quality4320": {
+    "message": "4320p (8K)"
+  },
+  "playbackSpeed": {
+    "message": "재생 속도"
+  },
+  "speed025": {
+    "message": "0.25x"
+  },
+  "speed05": {
+    "message": "0.5x"
+  },
+  "speed075": {
+    "message": "0.75x"
+  },
+  "speed1": {
+    "message": "1x (기본)"
+  },
+  "speed125": {
+    "message": "1.25x"
+  },
+  "speed15": {
+    "message": "1.5x"
+  },
+  "speed175": {
+    "message": "1.75x"
+  },
+  "speed2": {
+    "message": "2x"
+  },
+  "speed25": {
+    "message": "2.5x"
+  },
+  "speed3": {
+    "message": "3x"
+  },
+  "reportBug": {
+    "message": "버그 신고"
+  },
+  "githubIssue": {
+    "message": "GitHub 이슈"
+  },
+  "email": {
+    "message": "이메일"
+  },
+  "googleForm": {
+    "message": "Google 설문"
+  },
+  "support": {
+    "message": "후원"
+  },
+  "donate": {
+    "message": "기부"
+  },
+  "rateExtension": {
+    "message": "확장 프로그램 평가"
+  },
+  "privacyPolicy": {
+    "message": "개인정보 처리방침"
+  },
+  "statusSaved": {
+    "message": "저장됨!"
+  },
+  "statusErrorLoading": {
+    "message": "설정을 불러오는 중 오류가 발생했습니다"
+  },
+  "statusErrorSaving": {
+    "message": "설정을 저장하는 중 오류가 발생했습니다"
+  }
+}

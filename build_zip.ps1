@@ -5,7 +5,7 @@
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 $outDir = Join-Path $root "dist"
-$zipPath = Join-Path $outDir "lucent-for-youtube-1.0.9.zip"
+$zipPath = Join-Path $outDir "lucent-for-youtube-1.0.10.zip"
 
 # Files/folders to include in the extension package
 $include = @(
@@ -20,6 +20,18 @@ $include = @(
     "images\icon32.png",
     "images\icon48.png",
     "images\icon128.png",
+    "_locales\en\messages.json",
+    "_locales\de\messages.json",
+    "_locales\fr\messages.json",
+    "_locales\es\messages.json",
+    "_locales\ko\messages.json",
+    "_locales\pt_BR\messages.json",
+    "_locales\ja\messages.json",
+    "_locales\tr\messages.json",
+    "_locales\id\messages.json",
+    "_locales\it\messages.json",
+    "_locales\pl\messages.json",
+    "_locales\nl\messages.json",
     "LICENSE",
     "privacy_policy.html"
 )

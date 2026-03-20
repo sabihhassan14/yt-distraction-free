@@ -1,0 +1,182 @@
+{
+  "extName": {
+    "message": "Bloquear YouTube Shorts + Auto HD/4K"
+  },
+  "extDescription": {
+    "message": "Elimina YouTube Shorts y todas las demas distracciones. Ajusta automaticamente la calidad de video y la velocidad de reproduccion. Privacidad primero, sin rastreo."
+  },
+  "actionTitle": {
+    "message": "Bloquear YouTube Shorts + Auto HD/4K"
+  },
+  "popupTitle": {
+    "message": "Bloquear YouTube Shorts + Auto HD/4K"
+  },
+  "themeToggleTitle": {
+    "message": "Cambiar tema"
+  },
+  "coreBlocking": {
+    "message": "Bloqueo principal"
+  },
+  "videoEngine": {
+    "message": "Motor de video"
+  },
+  "shorts": {
+    "message": "Shorts"
+  },
+  "shortsDesc": {
+    "message": "Ocultar Shorts por completo"
+  },
+  "homepage": {
+    "message": "Inicio"
+  },
+  "homepageDesc": {
+    "message": "Ocultar recomendaciones"
+  },
+  "sidebar": {
+    "message": "Barra lateral"
+  },
+  "sidebarDesc": {
+    "message": "Ocultar videos relacionados"
+  },
+  "leftAlignPlayer": {
+    "message": "Alinear reproductor a la izquierda"
+  },
+  "leftAlignPlayerDesc": {
+    "message": "Fijar reproductor al borde izquierdo"
+  },
+  "playerOverlays": {
+    "message": "Superposiciones del reproductor"
+  },
+  "playerOverlaysDesc": {
+    "message": "Ocultar pantallas finales, marca de agua y tarjetas"
+  },
+  "liveChat": {
+    "message": "Chat en vivo"
+  },
+  "liveChatDesc": {
+    "message": "Minimizar siempre el chat"
+  },
+  "channelAutoplay": {
+    "message": "Autoplay del canal"
+  },
+  "channelAutoplayDesc": {
+    "message": "Pausar video en la pagina principal del canal"
+  },
+  "autoVideosTab": {
+    "message": "Pestana Videos automatica"
+  },
+  "autoVideosTabDesc": {
+    "message": "Redirigir Inicio a Videos"
+  },
+  "blurThumbnails": {
+    "message": "Difuminar miniaturas"
+  },
+  "blurThumbnailsDesc": {
+    "message": "Mostrar imagenes solo al pasar el cursor"
+  },
+  "socialDetox": {
+    "message": "Detox social"
+  },
+  "socialDetoxDesc": {
+    "message": "Ocultar suscriptores, me gusta y comentarios"
+  },
+  "pauseOnLoad": {
+    "message": "Pausar al cargar"
+  },
+  "pauseOnLoadDesc": {
+    "message": "Detener autoplay en una pestana nueva"
+  },
+  "enforceResolution": {
+    "message": "Forzar resolucion"
+  },
+  "qualityAuto": {
+    "message": "Auto (Nativo)"
+  },
+  "quality360": {
+    "message": "360p"
+  },
+  "quality480": {
+    "message": "480p"
+  },
+  "quality720": {
+    "message": "720p (HD)"
+  },
+  "quality1080": {
+    "message": "1080p (FHD)"
+  },
+  "quality1440": {
+    "message": "1440p (2K)"
+  },
+  "quality2160": {
+    "message": "2160p (4K)"
+  },
+  "quality4320": {
+    "message": "4320p (8K)"
+  },
+  "playbackSpeed": {
+    "message": "Velocidad de reproduccion"
+  },
+  "speed025": {
+    "message": "0.25x"
+  },
+  "speed05": {
+    "message": "0.5x"
+  },
+  "speed075": {
+    "message": "0.75x"
+  },
+  "speed1": {
+    "message": "1x (Normal)"
+  },
+  "speed125": {
+    "message": "1.25x"
+  },
+  "speed15": {
+    "message": "1.5x"
+  },
+  "speed175": {
+    "message": "1.75x"
+  },
+  "speed2": {
+    "message": "2x"
+  },
+  "speed25": {
+    "message": "2.5x"
+  },
+  "speed3": {
+    "message": "3x"
+  },
+  "reportBug": {
+    "message": "Reportar error"
+  },
+  "githubIssue": {
+    "message": "Issue de GitHub"
+  },
+  "email": {
+    "message": "Correo"
+  },
+  "googleForm": {
+    "message": "Formulario de Google"
+  },
+  "support": {
+    "message": "Soporte"
+  },
+  "donate": {
+    "message": "Donar"
+  },
+  "rateExtension": {
+    "message": "Calificar extension"
+  },
+  "privacyPolicy": {
+    "message": "Politica de privacidad"
+  },
+  "statusSaved": {
+    "message": "Guardado!"
+  },
+  "statusErrorLoading": {
+    "message": "Error al cargar la configuracion"
+  },
+  "statusErrorSaving": {
+    "message": "Error al guardar la configuracion"
+  }
+}

@@ -21,10 +21,35 @@ const DEFAULT_SETTINGS = {
 
 // Initialize popup on page load
 document.addEventListener('DOMContentLoaded', () => {
+    localizeUI();
     loadTheme();
     loadSettings();
     setupEventListeners();
 });
+
+function t(key, fallback = '') {
+    try {
+        return chrome.i18n.getMessage(key) || fallback;
+    } catch (_) {
+        return fallback;
+    }
+}
+
+function localizeUI() {
+    document.title = t('popupTitle', document.title);
+
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.getAttribute('data-i18n');
+        const localized = t(key, el.textContent);
+        if (localized) el.textContent = localized;
+    });
+
+    document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+        const key = el.getAttribute('data-i18n-title');
+        const localized = t(key, el.getAttribute('title') || '');
+        if (localized) el.setAttribute('title', localized);
+    });
+}
 
 /**
  * Load settings from chrome.storage.sync and populate the UI
@@ -33,7 +58,7 @@ function loadSettings() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, function (settings) {
         if (chrome.runtime.lastError) {
             console.error('Error loading settings:', chrome.runtime.lastError);
-            showStatus('Error loading settings', 'error');
+            showStatus(t('statusErrorLoading', 'Error loading settings'), 'error');
             return;
         }
 
@@ -160,11 +185,11 @@ function saveSettings() {
 
     chrome.storage.sync.set(settings, function () {
         if (chrome.runtime.lastError) {
-            showStatus('Error saving settings', 'error');
+            showStatus(t('statusErrorSaving', 'Error saving settings'), 'error');
             return;
         }
 
-        showStatus('Saved!', 'success');
+        showStatus(t('statusSaved', 'Saved!'), 'success');
 
         // Broadcast to YouTube tabs
         chrome.tabs.query({ url: 'https://www.youtube.com/*' }, (tabs) => {
