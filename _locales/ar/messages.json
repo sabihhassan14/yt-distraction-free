@@ -1,8 +1,8 @@
 {
-  "extName": { "message": "حظر YouTube Shorts + تلقائي HD/4K" },
+  "extName": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
   "extDescription": { "message": "يزيل YouTube Shorts وكل المشتتات الأخرى. يضبط جودة الفيديو وسرعة التشغيل تلقائيًا. الخصوصية أولًا، بدون تتبع." },
-  "actionTitle": { "message": "حظر YouTube Shorts + تلقائي HD/4K" },
-  "popupTitle": { "message": "حظر YouTube Shorts + تلقائي HD/4K" },
+  "actionTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "popupTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
   "themeToggleTitle": { "message": "تبديل السمة" },
   "coreBlocking": { "message": "الحظر الأساسي" },
   "videoEngine": { "message": "محرك الفيديو" },

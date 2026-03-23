@@ -1,15 +1,15 @@
 {
   "extName": {
-    "message": "Bloquer YouTube Shorts + Auto HD/4K"
+    "message": "Remove YouTube Recommendations + Auto HD/4K"
   },
   "extDescription": {
     "message": "Supprime YouTube Shorts et toutes les autres distractions. Regle automatiquement la qualite video et la vitesse de lecture. Respect de la vie privee, sans suivi."
   },
   "actionTitle": {
-    "message": "Bloquer YouTube Shorts + Auto HD/4K"
+    "message": "Remove YouTube Recommendations + Auto HD/4K"
   },
   "popupTitle": {
-    "message": "Bloquer YouTube Shorts + Auto HD/4K"
+    "message": "Remove YouTube Recommendations + Auto HD/4K"
   },
   "themeToggleTitle": {
     "message": "Basculer le theme"

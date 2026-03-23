@@ -1,8 +1,8 @@
 {
-  "extName": { "message": "Blokkeer YouTube Shorts + Auto HD/4K" },
+  "extName": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
   "extDescription": { "message": "Verwijdert YouTube Shorts en alle andere afleidingen. Stelt videokwaliteit en afspeelsnelheid automatisch in. Privacy eerst, geen tracking." },
-  "actionTitle": { "message": "Blokkeer YouTube Shorts + Auto HD/4K" },
-  "popupTitle": { "message": "Blokkeer YouTube Shorts + Auto HD/4K" },
+  "actionTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "popupTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
   "themeToggleTitle": { "message": "Thema wisselen" },
   "coreBlocking": { "message": "Kernblokkering" },
   "videoEngine": { "message": "Video-engine" },
