@@ -1,8 +1,8 @@
 {
-  "extName": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "extName": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
   "extDescription": { "message": "Menghapus YouTube Shorts dan semua gangguan lainnya. Otomatis mengatur kualitas video dan kecepatan pemutaran. Privasi utama, tanpa pelacakan." },
-  "actionTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
-  "popupTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "actionTitle": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
+  "popupTitle": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
   "themeToggleTitle": { "message": "Ganti tema" },
   "coreBlocking": { "message": "Pemblokiran utama" },
   "videoEngine": { "message": "Mesin video" },

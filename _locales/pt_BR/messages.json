@@ -1,8 +1,8 @@
 {
-  "extName": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "extName": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
   "extDescription": { "message": "Remove YouTube Shorts e todas as outras distracoes. Define automaticamente a qualidade do video e a velocidade de reproducao. Privacidade em primeiro lugar, sem rastreamento." },
-  "actionTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
-  "popupTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "actionTitle": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
+  "popupTitle": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
   "themeToggleTitle": { "message": "Alternar tema" },
   "coreBlocking": { "message": "Bloqueio principal" },
   "videoEngine": { "message": "Mecanismo de video" },

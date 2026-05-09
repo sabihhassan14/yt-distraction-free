@@ -1,8 +1,8 @@
 {
-  "extName": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "extName": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
   "extDescription": { "message": "YouTube Shorts ve diger tum dikkat dagiticilari kaldirir. Video kalitesini ve oynatma hizini otomatik ayarlar. Gizlilik odakli, izleme yok." },
-  "actionTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
-  "popupTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "actionTitle": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
+  "popupTitle": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
   "themeToggleTitle": { "message": "Temayi degistir" },
   "coreBlocking": { "message": "Temel engelleme" },
   "videoEngine": { "message": "Video motoru" },

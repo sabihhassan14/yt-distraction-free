@@ -95,15 +95,21 @@ function init() {
     // only sync settings to localStorage for quality.js — skip all UI logic.
     if (IS_EMBEDDED) {
         chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
-            currentSettings = settings;
-            syncSettingsToLocalStorage(settings);
+            // ERROR HANDLING for embedded contexts
+            if (chrome.runtime.lastError) {
+                console.warn('Storage unavailable in embedded context:', chrome.runtime.lastError);
+                currentSettings = DEFAULT_SETTINGS;
+            } else {
+                currentSettings = settings || DEFAULT_SETTINGS;
+            }
+            syncSettingsToLocalStorage(currentSettings);
             window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
                 detail: {
-                    blockEndscreen: !!settings.blockPlayerOverlays,
-                    quality:        settings.qualitySelect  || 'auto',
-                    speed:          settings.speedControl   || '1',
-                    playerOverlays: !!settings.blockPlayerOverlays,
-                    pauseOnLoad:    !!settings.pauseOnLoad,
+                    blockEndscreen: !!currentSettings.blockPlayerOverlays,
+                    quality:        currentSettings.qualitySelect  || 'auto',
+                    speed:          currentSettings.speedControl   || '1',
+                    playerOverlays: !!currentSettings.blockPlayerOverlays,
+                    pauseOnLoad:    !!currentSettings.pauseOnLoad,
                 }
             }));
         });
@@ -124,16 +130,27 @@ function init() {
     // third time here creates a race where the storage callback fires while the
     // SPA router is still processing the first redirect.
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
-        currentSettings = settings;
-        syncSettingsToLocalStorage(settings);
+        // ERROR HANDLING: Check for storage access errors
+        if (chrome.runtime.lastError) {
+            console.error('Error loading settings from storage:', chrome.runtime.lastError);
+            // Fallback to localStorage + defaults
+            currentSettings = { ...DEFAULT_SETTINGS };
+            // Try to restore from localStorage if it has values
+            const q = localStorage.getItem('ytdf_quality');
+            if (q) currentSettings.qualitySelect = q;
+        } else {
+            currentSettings = settings || DEFAULT_SETTINGS;
+        }
+        
+        syncSettingsToLocalStorage(currentSettings);
         // Notify quality.js that real storage values are now available
         window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
             detail: {
-                blockEndscreen: !!settings.blockPlayerOverlays,
-                quality:        settings.qualitySelect  || 'auto',
-                speed:          settings.speedControl   || '1',
-                playerOverlays: !!settings.blockPlayerOverlays,
-                pauseOnLoad:    !!settings.pauseOnLoad,
+                blockEndscreen: !!currentSettings.blockPlayerOverlays,
+                quality:        currentSettings.qualitySelect  || 'auto',
+                speed:          currentSettings.speedControl   || '1',
+                playerOverlays: !!currentSettings.blockPlayerOverlays,
+                pauseOnLoad:    !!currentSettings.pauseOnLoad,
             }
         }));
         applyBlocking();
@@ -161,6 +178,10 @@ function init() {
     window.addEventListener('yt-navigate-finish', () => {
         _redirectInFlight = false;
         gridAutoFlowSet = false; // allow re-priming per navigation
+        
+        // MEMORY LEAK FIX: Reset observer init flag to allow fresh setup
+        _observersInitialised = false;
+        
         setTimeout(() => {
             setupGridFixObserver();
             if (currentSettings.blockChannelAutoplay) scheduleChannelAutoplayStop();
@@ -509,15 +530,23 @@ function setupGridFixObserver() {
 /**
  * Setup mutation observers to reapply blocking when DOM changes.
  * Guard prevents creating duplicate observers if called more than once.
+ * IMPROVED: Properly disconnects old observer before creating new one
  */
 let _observersInitialised = false;
+let mainObserver = null; // Track observer for proper cleanup
 function setupMutationObservers() {
     if (_observersInitialised) return;
     _observersInitialised = true;
 
     const debouncedReapply = debounce(applyBlocking, 300);
 
-    const mainObserver = new MutationObserver((mutations) => {
+    // MEMORY LEAK FIX: Disconnect any existing observer before creating a new one
+    if (mainObserver) {
+        mainObserver.disconnect();
+        mainObserver = null;
+    }
+
+    mainObserver = new MutationObserver((mutations) => {
         const shouldReblock = mutations.some(m => {
             if (m.addedNodes.length === 0) return false;
             for (let i = 0; i < m.addedNodes.length; i++) {

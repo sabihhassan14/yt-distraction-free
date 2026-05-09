@@ -68,6 +68,7 @@ function localizeUI() {
 
 /**
  * Load settings from chrome.storage.sync and populate the UI
+ * IMPROVED: Added error handling and logging
  */
 function loadSettings() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, function (settings) {
@@ -75,6 +76,12 @@ function loadSettings() {
             console.error('Error loading settings:', chrome.runtime.lastError);
             showStatus(t('statusErrorLoading', 'Error loading settings'), 'error');
             return;
+        }
+
+        // Validate settings object
+        if (!settings || typeof settings !== 'object') {
+            console.warn('Invalid settings object received, using defaults');
+            settings = DEFAULT_SETTINGS;
         }
 
         // Update checkboxes
@@ -88,7 +95,7 @@ function loadSettings() {
 
         // Update select
         const qualitySelect = document.getElementById('qualitySelect');
-        if (qualitySelect) qualitySelect.value = settings.qualitySelect;
+        if (qualitySelect) qualitySelect.value = settings.qualitySelect || 'auto';
 
         const speedControl = document.getElementById('speedControl');
         if (speedControl) speedControl.value = settings.speedControl || '1';
@@ -179,6 +186,7 @@ function setupEventListeners() {
 
 /**
  * Save all current settings to chrome.storage.sync
+ * IMPROVED: Better error handling and validation
  */
 function saveSettings() {
     const settings = {
@@ -200,6 +208,7 @@ function saveSettings() {
 
     chrome.storage.sync.set(settings, function () {
         if (chrome.runtime.lastError) {
+            console.error('Error saving settings:', chrome.runtime.lastError);
             showStatus(t('statusErrorSaving', 'Error saving settings'), 'error');
             return;
         }
@@ -208,11 +217,19 @@ function saveSettings() {
 
         // Broadcast to YouTube tabs
         chrome.tabs.query({ url: 'https://www.youtube.com/*' }, (tabs) => {
+            if (chrome.runtime.lastError) {
+                console.warn('Error querying tabs:', chrome.runtime.lastError);
+                return;
+            }
+            
             tabs.forEach(tab => {
                 chrome.tabs.sendMessage(tab.id, {
                     type: 'SETTINGS_UPDATED',
                     settings
-                }).catch(() => { });
+                }).catch((err) => {
+                    // Silent catch — tab may not have content script loaded
+                    console.debug('Could not reach tab:', err);
+                });
             });
         });
     });

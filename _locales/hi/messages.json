@@ -1,8 +1,8 @@
 {
-  "extName": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "extName": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
   "extDescription": { "message": "YouTube Shorts और अन्य सभी विचलनों को हटाता है। वीडियो क्वालिटी और प्लेबैक स्पीड अपने आप सेट करता है। गोपनीयता पहले, बिना ट्रैकिंग।" },
-  "actionTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
-  "popupTitle": { "message": "Remove YouTube Recommendations + Auto HD/4K" },
+  "actionTitle": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
+  "popupTitle": { "message": "Block YouTube Shorts & Distractions + Auto HD" },
   "themeToggleTitle": { "message": "थीम बदलें" },
   "coreBlocking": { "message": "मुख्य ब्लॉकिंग" },
   "videoEngine": { "message": "वीडियो इंजन" },

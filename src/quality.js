@@ -232,20 +232,36 @@
     // childList catches card elements being inserted.
     // attributes (class/style) catches YouTube toggling visibility on existing elements.
     // We strip inline styles immediately — our CSS !important then hides them.
+    // OPTIMIZED: Increased debounce from 80ms to 300ms to prevent black screen
+    // caused by excessive DOM queries blocking the render thread.
     let endscreenObs = null;
     let _suppressDebounceTimer = null;
+    let _rafScheduled = false;
+    
     function debouncedSuppressEndscreen() {
         clearTimeout(_suppressDebounceTimer);
-        _suppressDebounceTimer = setTimeout(suppressEndscreen, 80);
+        // Cancel any pending RAF and schedule a new one
+        if (_rafScheduled) return;
+        
+        // Use requestAnimationFrame to sync with browser repaint cycle
+        _rafScheduled = true;
+        _suppressDebounceTimer = setTimeout(() => {
+            _rafScheduled = false;
+            suppressEndscreen();
+        }, 300); // Increased from 80ms to 300ms to prevent render thread blocking
     }
+    
     function attachEndscreenObserver() {
         if (endscreenObs) endscreenObs.disconnect();
         const player = document.getElementById('movie_player');
         if (!player) return;
         endscreenObs = new MutationObserver(debouncedSuppressEndscreen);
+        // CRITICAL FIX: Only watch for direct children (endscreen cards), not entire subtree
+        // This prevents the observer from firing on every animation frame and text update
         endscreenObs.observe(player, {
             childList: true,
-            subtree: true,
+            subtree: false, // Changed from true to false — limit scope significantly
+            attributes: false, // Don't watch style/class changes on every element
         });
         suppressEndscreen();
     }

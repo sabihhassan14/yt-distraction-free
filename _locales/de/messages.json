@@ -1,15 +1,15 @@
 {
   "extName": {
-    "message": "Remove YouTube Recommendations + Auto HD/4K"
+    "message": "Block YouTube Shorts & Distractions + Auto HD"
   },
   "extDescription": {
     "message": "Entfernt YouTube Shorts und andere Ablenkungen. Setzt Videoqualitat und Wiedergabegeschwindigkeit automatisch. Datenschutzfreundlich, ohne Tracking."
   },
   "actionTitle": {
-    "message": "Remove YouTube Recommendations + Auto HD/4K"
+    "message": "Block YouTube Shorts & Distractions + Auto HD"
   },
   "popupTitle": {
-    "message": "Remove YouTube Recommendations + Auto HD/4K"
+    "message": "Block YouTube Shorts & Distractions + Auto HD"
   },
   "themeToggleTitle": {
     "message": "Design umschalten"

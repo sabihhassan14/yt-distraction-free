@@ -1,15 +1,15 @@
 {
   "extName": {
-    "message": "Remove YouTube Recommendations + Auto HD/4K"
+    "message": "Block YouTube Shorts & Distractions + Auto HD"
   },
   "extDescription": {
     "message": "YouTube Shorts 및 기타 모든 방해 요소를 제거합니다. 동영상 화질과 재생 속도를 자동으로 설정합니다. 개인정보 보호 중심, 추적 없음."
   },
   "actionTitle": {
-    "message": "Remove YouTube Recommendations + Auto HD/4K"
+    "message": "Block YouTube Shorts & Distractions + Auto HD"
   },
   "popupTitle": {
-    "message": "Remove YouTube Recommendations + Auto HD/4K"
+    "message": "Block YouTube Shorts & Distractions + Auto HD"
   },
   "themeToggleTitle": {
     "message": "테마 전환"
