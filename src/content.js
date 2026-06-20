@@ -77,6 +77,21 @@ function syncSettingsToLocalStorage(s) {
     if (q) currentSettings.qualitySelect = q;
 })();
 
+// Immediately notify quality.js with seeded values before async storage load
+// This prevents quality.js polling with undefined values while waiting for storage
+(function earlyDispatchSettings() {
+    const ls = (k) => localStorage.getItem(k);
+    window.dispatchEvent(new CustomEvent('ytdf-settings-updated', {
+        detail: {
+            blockEndscreen: (ls('ytdf_player_overlays') || '1') !== '0',
+            quality:        ls('ytdf_quality') || 'auto',
+            speed:          ls('ytdf_speed') || '1',
+            playerOverlays: (ls('ytdf_player_overlays') || '1') !== '0',
+            pauseOnLoad:    (ls('ytdf_pause_on_load') || '0') === '1',
+        }
+    }));
+})();
+
 // ── IMMEDIATE CSS injection at document_start (before DOM renders) ──
 // Uses synchronously-read settings so metric-hiding rules are present from frame 0.
 (function earlyInjectCSS() {

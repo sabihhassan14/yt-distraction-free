@@ -32,23 +32,24 @@
     };
 
     // ─── Settings cache ────────────────────────────────────────────────────
-    // Populated from localStorage on init; refreshed on every ytdf-settings-updated
-    // event (fired by content.js after each storage write). Avoids repeated
-    // localStorage reads inside the 500 ms burst-poll loop.
+    // CRITICAL FIX: quality.js runs in MAIN world; localStorage is world-specific.
+    // Must rely ONLY on CustomEvent detail from content.js (ISOLATED world),
+    // NOT on localStorage which is inaccessible cross-world in MV3.
     const _settings = {
-        quality:        localStorage.getItem('ytdf_quality')         || 'auto',
-        speed:          localStorage.getItem('ytdf_speed')           || '1',
-        playerOverlays: localStorage.getItem('ytdf_player_overlays') !== '0',
-        pauseOnLoad:    localStorage.getItem('ytdf_pause_on_load')   === '1',
+        quality:        'auto',
+        speed:          '1',
+        playerOverlays: true,
+        pauseOnLoad:    false,
     };
+    
     window.addEventListener('ytdf-settings-updated', (e) => {
         const d = (e && e.detail) || {};
-        // Prefer values from event detail (populated by content.js from chrome.storage.sync).
-        // Falls back to localStorage for reliability on regular youtube.com tabs.
-        _settings.quality        = d.quality        !== undefined ? d.quality        : (localStorage.getItem('ytdf_quality')         || 'auto');
-        _settings.speed          = d.speed          !== undefined ? d.speed          : (localStorage.getItem('ytdf_speed')           || '1');
-        _settings.playerOverlays = d.playerOverlays !== undefined ? d.playerOverlays : (localStorage.getItem('ytdf_player_overlays') !== '0');
-        _settings.pauseOnLoad    = d.pauseOnLoad    !== undefined ? d.pauseOnLoad    : (localStorage.getItem('ytdf_pause_on_load')   === '1');
+        // CRITICAL: Use ONLY event detail values, never fall back to localStorage
+        // because localStorage is world-isolated in MV3
+        _settings.quality        = d.quality        || 'auto';
+        _settings.speed          = d.speed          || '1';
+        _settings.playerOverlays = d.playerOverlays !== undefined ? d.playerOverlays : true;
+        _settings.pauseOnLoad    = d.pauseOnLoad    !== undefined ? d.pauseOnLoad : false;
         // Re-apply quality immediately with the freshly cached values
         const player = getPlayer();
         if (player) applyQuality(player);
