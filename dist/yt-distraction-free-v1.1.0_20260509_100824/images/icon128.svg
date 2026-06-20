@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Background -->
+  <rect width="128" height="128" rx="20" fill="#0A0A0A"/>
+  <!-- L vertical bar -->
+  <rect x="22" y="16" width="20" height="82" rx="5" fill="white"/>
+  <!-- L horizontal bar -->
+  <rect x="22" y="80" width="84" height="20" rx="5" fill="white"/>
+  <!-- Red play triangle -->
+  <polygon points="54,20 54,72 102,46" fill="#FF0000"/>
+</svg>

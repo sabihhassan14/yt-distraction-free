@@ -146,12 +146,6 @@
     }
 
     const ENDSCREEN_CSS = `
-        /* CRITICAL: CSS Containment to prevent layout thrashing during endscreen suppression */
-        #movie_player {
-            contain: layout style paint;
-        }
-        
-        /* All endscreen-related elements */
         .ytp-ce-element, .ytp-ce-rendering-container, .ytp-ce-element-show,
         .ytp-ce-covering-overlay, .ytp-ce-expanding-overlay,
         .ytp-ce-covering-image, .ytp-ce-expanding-image,
@@ -208,38 +202,19 @@
 
     function suppressEndscreen() {
         if (!shouldBlockEndscreen()) return;
-        
-        // OPTIMIZATION: Batch DOM operations to prevent jank
-        // Use document.querySelectorAll minimally with combined selectors
-        try {
-            // Strip inline styles in one batch
-            const allEndscreenElements = document.querySelectorAll(
-                '.ytp-ce-element, .ytp-ce-rendering-container, .ytp-ce-element-show, ' +
-                '.html5-endscreen, .ytp-endscreen, .ytp-pause-overlay, ' +
-                '.ytp-pause-overlay-container, .ytp-autonav-endscreen, .ytp-suggested-action, ' +
-                '.videowall-endscreen, .ytp-show-videowall-ui, .ytp-show-videowall, ' +
-                '.ytp-upnext, .ytp-endscreen-paginate'
-            );
-            
-            // Remove properties in one loop (faster than per-element)
-            allEndscreenElements.forEach(el => {
-                el.style.display = 'none';
-                el.style.visibility = 'hidden';
-                el.style.opacity = '0';
-                el.style.pointerEvents = 'none';
+        // Strip inline styles so our CSS !important stylesheet rule wins
+        STRIP_SELS.forEach(sel => {
+            document.querySelectorAll(sel).forEach(el => {
+                el.style.removeProperty('display');
+                el.style.removeProperty('visibility');
+                el.style.removeProperty('opacity');
+                el.style.removeProperty('pointer-events');
             });
-            
-            // Remove card elements (less frequent operation)
-            const cardElements = document.querySelectorAll(
-                'ytd-endscreen-element-renderer, ytd-compact-autoplay-renderer, ' +
-                '.ytp-ce-video, .ytp-ce-playlist, .ytp-ce-channel'
-            );
-            cardElements.forEach(el => {
-                try { el.remove(); } catch (e) { }
-            });
-        } catch (e) {
-            // Silently ignore errors to prevent black screen on DOM access failures
-        }
+        });
+        // Remove card elements entirely
+        REMOVE_SELS.forEach(sel => {
+            document.querySelectorAll(sel).forEach(el => el.remove());
+        });
     }
 
     function injectEndscreenCSS() {
@@ -252,113 +227,68 @@
         s.textContent = ENDSCREEN_CSS;
         (document.head || document.documentElement).appendChild(s);
     }
-    
-    // Fullscreen safety: ensure canvas elements render properly
-    // YouTube renders fullscreen video in a canvas element that must stay visible
-    const FULLSCREEN_SAFETY_CSS = `
-        /* Protect canvas rendering in fullscreen mode */
-        .html5-video-player canvas,
-        #movie_player canvas,
-        canvas[class*="video"] {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            pointer-events: auto !important;
-        }
-        
-        /* Ensure video layers aren't hidden */
-        .html5-video-player .html5-main-video,
-        #movie_player video,
-        video.html5-main-video {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-    `;
-    
-    function injectFullscreenSafetyCSS() {
-        const id = 'ytdf-fullscreen-safety-css';
-        if (document.getElementById(id)) return;
-        const s = document.createElement('style');
-        s.id = id;
-        s.textContent = FULLSCREEN_SAFETY_CSS;
-        (document.head || document.documentElement).appendChild(s);
-    }
-    
-    // Inject safety CSS immediately at script load
-    injectFullscreenSafetyCSS();
 
-    // ─── CRITICAL FIX: Optimized endscreen suppression to prevent black screen ─────
-    // Root cause: Aggressive DOM queries in tight polling loop blocks render thread
-    // Solution: Event-driven suppression with RequestAnimationFrame batching
-    //           Removed MutationObserver entirely (was causing 60+ FPS jank)
+    // Tight-scoped MutationObserver on #movie_player only.
+    // childList catches card elements being inserted.
+    // attributes (class/style) catches YouTube toggling visibility on existing elements.
+    // We strip inline styles immediately — our CSS !important then hides them.
+    // OPTIMIZED: Increased debounce from 80ms to 300ms to prevent black screen
+    // caused by excessive DOM queries blocking the render thread.
     let endscreenObs = null;
-    let _suppressScheduled = false;
-    let _suppressRafId = null;
+    let _suppressDebounceTimer = null;
+    let _rafScheduled = false;
     
-    function scheduleSuppressEndscreen() {
-        if (_suppressScheduled) return;
-        _suppressScheduled = true;
+    function debouncedSuppressEndscreen() {
+        clearTimeout(_suppressDebounceTimer);
+        // Cancel any pending RAF and schedule a new one
+        if (_rafScheduled) return;
         
-        // Cancel any pending RAF
-        if (_suppressRafId) cancelAnimationFrame(_suppressRafId);
-        
-        // Batch suppression with next animation frame
-        _suppressRafId = requestAnimationFrame(() => {
+        // Use requestAnimationFrame to sync with browser repaint cycle
+        _rafScheduled = true;
+        _suppressDebounceTimer = setTimeout(() => {
+            _rafScheduled = false;
             suppressEndscreen();
-            _suppressScheduled = false;
-        });
+        }, 300); // Increased from 80ms to 300ms to prevent render thread blocking
     }
     
     function attachEndscreenObserver() {
-        // NEW STRATEGY: Minimal observer that only triggers on card insertions
-        // Stop watching for attribute/class changes which fire constantly
         if (endscreenObs) endscreenObs.disconnect();
         const player = document.getElementById('movie_player');
         if (!player) return;
-        
-        // Only track DIRECT child additions (endscreen elements)
-        // NOT subtree - this prevents observer from firing on every animation
-        endscreenObs = new MutationObserver(scheduleSuppressEndscreen);
+        endscreenObs = new MutationObserver(debouncedSuppressEndscreen);
+        // CRITICAL FIX: Only watch for direct children (endscreen cards), not entire subtree
+        // This prevents the observer from firing on every animation frame and text update
         endscreenObs.observe(player, {
             childList: true,
-            subtree: false, // CRITICAL: Only direct children
-            attributes: false, // DISABLED: Causes excessive firing
-            characterData: false,
+            subtree: false, // Changed from true to false — limit scope significantly
+            attributes: false, // Don't watch style/class changes on every element
         });
         suppressEndscreen();
     }
 
     // Event-driven suppression — replaces the aggressive interval with clever triggers
     const _listenerAttachedTo = new WeakSet(); // tracks which player elements already have the listener
-    let _stateChangeDebounceTimer = null;
-    
     function setupSuppressionEvent() {
         const player = document.getElementById('movie_player');
         if (!player) return;
 
         // Guard: only attach onStateChange once per player element instance.
+        // YouTube's SPA keeps #movie_player alive across navigations, so without
+        // this guard every yt-navigate-finish / yt-page-data-updated call would
+        // stack another listener on the same element.
         if (_listenerAttachedTo.has(player)) return;
         _listenerAttachedTo.add(player);
 
         const trigger = () => {
-            // Cancel previous timer and schedule new one
-            clearTimeout(_stateChangeDebounceTimer);
-            _stateChangeDebounceTimer = setTimeout(() => {
-                if (shouldBlockEndscreen()) suppressEndscreen();
-            }, 100); // Reduced from aggressive cascading timeouts
+            if (shouldBlockEndscreen()) suppressEndscreen();
         };
-        
-        try {
-            player.addEventListener('onStateChange', (state) => {
-                // Only suppress on state transitions: ended (0), paused (2), buffering (3)
-                if (state === 0 || state === 2 || state === 3) {
-                    trigger();
-                }
-            });
-        } catch (e) {
-            // Player API may not support onStateChange event
-        }
+        player.addEventListener('onStateChange', (state) => {
+            if (state === 0 || state === 2 || state === 3) {
+                trigger();
+                setTimeout(trigger, 500);
+                setTimeout(trigger, 1000);
+            }
+        });
     }
 
     function initEndscreen() {
@@ -453,24 +383,14 @@
     /** Short burst: apply every 500 ms for 20 s (handles initial load + quality resets) */
     let pollTimer = null;
     let persistTimer = null;
-    let epoll = null; // Track initial poll for cleanup
 
     function startBurstPolling() {
         if (pollTimer) clearInterval(pollTimer);
         let ticks = 0;
         pollTimer = setInterval(() => {
             const player = getPlayer();
-            if (player) {
-                try {
-                    applyQuality(player);
-                } catch (e) {
-                    // Silently ignore errors in polling to prevent cascading issues
-                }
-            }
-            if (++ticks >= 40) {
-                clearInterval(pollTimer);
-                pollTimer = null;
-            }
+            if (player) applyQuality(player);
+            if (++ticks >= 40) clearInterval(pollTimer);
         }, 500);
     }
 
@@ -484,14 +404,7 @@
         persistTimer = setInterval(() => {
             const isWatch = location.pathname.startsWith('/watch');
             const isEmbed = location.pathname.startsWith('/embed/');
-            if (!isWatch && !isEmbed) {
-                // Not on a playable page anymore - stop polling
-                if (persistTimer) {
-                    clearInterval(persistTimer);
-                    persistTimer = null;
-                }
-                return;
-            }
+            if (!isWatch && !isEmbed) return;
             const player = getPlayer();
             if (!player) return;
             // Player element was re-created — restart burst to re-enforce settings
@@ -500,21 +413,12 @@
                 startBurstPolling();
                 return;
             }
-            try {
-                applyQuality(player);
-            } catch (e) {
-                // Silently ignore errors
-            }
+            applyQuality(player);
         }, 3000);
     }
 
     // Each YouTube SPA navigation: burst + (re)start persistent poll
     window.addEventListener('yt-navigate-finish', () => {
-        // Clean up old poll before starting new one
-        if (epoll) {
-            clearInterval(epoll);
-            epoll = null;
-        }
         startBurstPolling();
         startPersistentPoll();
     });
@@ -530,46 +434,19 @@
     document.addEventListener('play', () => {
         const player = getPlayer();
         if (player) {
-            try {
-                applyQuality(player);
-                handlePauseOnLoad();
-            } catch (e) {
-                // Silently ignore
-            }
+            applyQuality(player);
+            handlePauseOnLoad();
         }
     }, true);
 
     // Also poll specifically for the first pause to be extra reliable
-    let plPoll = null;
-    function startPauseOnLoadPoll() {
-        if (plPoll) clearInterval(plPoll);
-        plPoll = setInterval(() => {
-            if (hasPausedOnLoad) {
-                if (plPoll) {
-                    clearInterval(plPoll);
-                    plPoll = null;
-                }
-                return;
-            }
-            handlePauseOnLoad();
-        }, 100);
-    }
-    
-    startPauseOnLoadPoll();
-    
-    // Timeout the pause poll after 10 seconds to save resources
-    const plPollTimeout = setTimeout(() => {
-        if (plPoll) {
+    const plPoll = setInterval(() => {
+        if (hasPausedOnLoad) {
             clearInterval(plPoll);
-            plPoll = null;
+            return;
         }
-    }, 10000);
-    
-    // Cleanup function for navigation and resource management
-    window.addEventListener('yt-navigate-start', () => {
-        // Clean up interval polling on navigation
-        if (epoll) clearInterval(epoll);
-        if (plPoll) clearInterval(plPoll);
-        // These will be restarted on yt-navigate-finish
-    });
+        handlePauseOnLoad();
+    }, 100);
+    // Timeout the pause poll after 10 seconds to save resources
+    setTimeout(() => clearInterval(plPoll), 10000);
 })();

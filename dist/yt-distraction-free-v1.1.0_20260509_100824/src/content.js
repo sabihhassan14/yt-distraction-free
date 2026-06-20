@@ -182,33 +182,8 @@ function init() {
         // MEMORY LEAK FIX: Reset observer init flag to allow fresh setup
         _observersInitialised = false;
         
-        // Disconnect old grid observer to prevent leaks
-        if (gridFixObserver) {
-            gridFixObserver.disconnect();
-            gridFixObserver = null;
-        }
-        if (gridFixIdleCallback && 'cancelIdleCallback' in window) {
-            cancelIdleCallback(gridFixIdleCallback);
-            gridFixIdleCallback = null;
-        }
-        
-        // Clean up old main observer for fresh re-initialization
-        if (mainObserver) {
-            mainObserver.disconnect();
-            mainObserver = null;
-        }
-        if (waitForApp) {
-            clearInterval(waitForApp);
-            waitForApp = null;
-        }
-        if (waitForAppTimeout) {
-            clearTimeout(waitForAppTimeout);
-            waitForAppTimeout = null;
-        }
-        
         setTimeout(() => {
             setupGridFixObserver();
-            setupMutationObservers();
             if (currentSettings.blockChannelAutoplay) scheduleChannelAutoplayStop();
             if (currentSettings.hideMetrics) hideSubscriberCountsJS();
             if (currentSettings.blockShorts) hideShortsDOM();
@@ -532,20 +507,8 @@ function fixGridLayout() {
 const debouncedFixGrid = debounce(fixGridLayout, 150);
 
 let gridFixObserver = null;
-let gridFixIdleCallback = null; // Track requestIdleCallback for cleanup
-
 function setupGridFixObserver() {
-    if (gridFixObserver) {
-        gridFixObserver.disconnect();
-        gridFixObserver = null;
-    }
-    
-    // Cancel pending idle callback
-    if (gridFixIdleCallback && 'cancelIdleCallback' in window) {
-        cancelIdleCallback(gridFixIdleCallback);
-        gridFixIdleCallback = null;
-    }
-    
+    if (gridFixObserver) gridFixObserver.disconnect();
     const contents = document.querySelector('ytd-rich-grid-renderer #contents');
     if (!contents) return;
 
@@ -554,18 +517,11 @@ function setupGridFixObserver() {
         if (hasAdded) debouncedFixGrid();
     });
 
-    gridFixObserver.observe(contents, { 
-        childList: true,
-        subtree: false, // Reduce overhead
-        attributes: false,
-    });
+    gridFixObserver.observe(contents, { childList: true });
 
     // Initial pass after first paint to avoid blocking thumbnail render
     if ('requestIdleCallback' in window) {
-        gridFixIdleCallback = requestIdleCallback(() => {
-            debouncedFixGrid();
-            gridFixIdleCallback = null;
-        }, { timeout: 400 });
+        requestIdleCallback(() => debouncedFixGrid(), { timeout: 400 });
     } else {
         setTimeout(() => debouncedFixGrid(), 120);
     }
@@ -575,44 +531,30 @@ function setupGridFixObserver() {
  * Setup mutation observers to reapply blocking when DOM changes.
  * Guard prevents creating duplicate observers if called more than once.
  * IMPROVED: Properly disconnects old observer before creating new one
- * FIXED: Clean up resources on navigation to prevent memory leaks
  */
 let _observersInitialised = false;
 let mainObserver = null; // Track observer for proper cleanup
-let waitForApp = null; // Track interval for cleanup
-let waitForAppTimeout = null; // Track timeout for cleanup
-
 function setupMutationObservers() {
     if (_observersInitialised) return;
     _observersInitialised = true;
 
     const debouncedReapply = debounce(applyBlocking, 300);
 
-    // MEMORY LEAK FIX: Disconnect and clean up any existing observer before creating a new one
+    // MEMORY LEAK FIX: Disconnect any existing observer before creating a new one
     if (mainObserver) {
         mainObserver.disconnect();
         mainObserver = null;
     }
-    
-    // Clean up existing intervals/timeouts
-    if (waitForApp) {
-        clearInterval(waitForApp);
-        waitForApp = null;
-    }
-    if (waitForAppTimeout) {
-        clearTimeout(waitForAppTimeout);
-        waitForAppTimeout = null;
-    }
 
     mainObserver = new MutationObserver((mutations) => {
         const shouldReblock = mutations.some(m => {
-            if (!m.addedNodes || m.addedNodes.length === 0) return false;
+            if (m.addedNodes.length === 0) return false;
             for (let i = 0; i < m.addedNodes.length; i++) {
                 const node = m.addedNodes[i];
-                if (node.nodeType !== 1) continue; // Skip non-element nodes
+                if (node.nodeType !== 1) continue;
                 const tag = node.tagName.toLowerCase();
                 if (tag.startsWith('ytd-') || tag.startsWith('ytp-') || tag.startsWith('yt-') ||
-                    (node.classList && node.classList.contains('ytp-ce-element'))) {
+                    node.classList.contains('ytp-ce-element')) {
                     return true;
                 }
             }
@@ -622,29 +564,16 @@ function setupMutationObservers() {
     });
 
     // Wait for ytd-app then start the main observer
-    waitForApp = setInterval(() => {
+    const waitForApp = setInterval(() => {
         const contentArea = document.querySelector('ytd-app');
         if (contentArea) {
             clearInterval(waitForApp);
             clearTimeout(waitForAppTimeout);
-            waitForApp = null;
-            waitForAppTimeout = null;
-            mainObserver.observe(contentArea, { 
-                childList: true, 
-                subtree: true,
-                attributes: false, // Don't watch attributes to reduce overhead
-                characterData: false,
-            });
+            mainObserver.observe(contentArea, { childList: true, subtree: true });
         }
     }, 500);
-    
     // Bail out after 15 s to avoid polling forever on broken/changed pages
-    waitForAppTimeout = setTimeout(() => {
-        if (waitForApp) {
-            clearInterval(waitForApp);
-            waitForApp = null;
-        }
-    }, 15000);
+    const waitForAppTimeout = setTimeout(() => clearInterval(waitForApp), 15000);
 }
 
 /**
